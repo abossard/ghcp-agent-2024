@@ -1,5 +1,7 @@
 package com.example.demo.controller;
 
+import com.example.demo.controller.dto.CreateGreetingRequest;
+import com.example.demo.controller.dto.GreetingResponse;
 import com.example.demo.model.Greeting;
 import com.example.demo.service.GreetingService;
 import jakarta.validation.Valid;
@@ -20,26 +22,28 @@ public class GreetingController {
     }
 
     @GetMapping
-    public List<Greeting> getAll() {
-        return greetingService.findAll();
+    public List<GreetingResponse> getAll() {
+        return GreetingResponse.fromList(greetingService.findAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Greeting> getById(@PathVariable Long id) {
+    public ResponseEntity<GreetingResponse> getById(@PathVariable Long id) {
         return greetingService.findById(id)
+                .map(GreetingResponse::from)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/language/{language}")
-    public List<Greeting> getByLanguage(@PathVariable String language) {
-        return greetingService.findByLanguage(language);
+    public List<GreetingResponse> getByLanguage(@PathVariable String language) {
+        return GreetingResponse.fromList(greetingService.findByLanguage(language));
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Greeting create(@Valid @RequestBody Greeting greeting) {
-        return greetingService.create(greeting);
+    public GreetingResponse create(@Valid @RequestBody CreateGreetingRequest request) {
+        var greeting = new Greeting(request.message(), request.languageOrDefault());
+        return GreetingResponse.from(greetingService.create(greeting));
     }
 
     @DeleteMapping("/{id}")

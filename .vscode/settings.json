@@ -86,7 +86,22 @@
     // ── Chat & Agent Mode ────────────────────────────────────────
     "chat.commandCenter.enabled": true,
     "chat.agent.enabled": true,
-    "chat.agent.maxRequests": 30,
+    "chat.agent.maxRequests": 50,
+
+    // ── Auto-Approve for Autonomous Workflows ────────────────────
+    // Set to true for full-auto "YOLO" mode (only in trusted dev environments!)
+    // Set to false for manual approval of each tool action (safer for FSI)
+    "chat.tools.autoApprove": false,
+
+    // Auto-approve file edits by the agent (reduces friction significantly)
+    // The agent can create/edit files without confirmation dialogs
+    "chat.tools.edits.autoApprove": true,
+
+    // Auto-fix compilation errors after edits (agent self-corrects)
+    "github.copilot.chat.agent.autoFix": true,
+
+    // Allow agent to run VS Code tasks (build, test) autonomously
+    "github.copilot.chat.agent.runTasks": true,
 
     // ── Instruction Files ────────────────────────────────────────
     "github.copilot.chat.codeGeneration.useInstructionFiles": true,

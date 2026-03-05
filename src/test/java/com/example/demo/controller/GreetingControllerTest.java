@@ -36,7 +36,21 @@ class GreetingControllerTest {
                         .content(json))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.message").value("Hello World"))
-                .andExpect(jsonPath("$.language").value("en"));
+                .andExpect(jsonPath("$.language").value("en"))
+                .andExpect(jsonPath("$.id").isNumber());
+    }
+
+    @Test
+    void shouldReturn400ForBlankMessage() throws Exception {
+        String json = """
+                {"message": "", "language": "en"}
+                """;
+
+        mockMvc.perform(post("/api/greetings")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errors.message").exists());
     }
 
     @Test

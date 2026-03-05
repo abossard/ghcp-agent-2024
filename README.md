@@ -237,8 +237,35 @@ curl http://localhost:8080/api/greetings
 1. Open the project in VS Code
 2. Open Copilot Chat (Ctrl+Shift+I)
 3. Switch to **Agent Mode** in the chat dropdown
-4. Choose a chat mode (Spring Dev, Test, Review)
-5. Use slash commands from the prompts: `/new-rest-endpoint`, `/write-tests`, `/security-review`
+4. Choose a chat mode:
+   - **Spring Dev** — general development
+   - **Test Mode** — focused testing
+   - **Review Mode** — read-only code review
+   - **Full Auto** — maximum autonomy for feature implementation
+5. Use slash commands from the prompts: `/implement-feature`, `/new-rest-endpoint`, `/write-tests`, `/security-review`
+
+### Implementing a Feature Autonomously
+The killer use case — give the agent a feature spec, it builds everything:
+
+1. Switch to **Full Auto** chat mode
+2. Use the `/implement-feature` prompt
+3. Describe your feature:
+   ```
+   /implement-feature
+
+   Create a "Product" feature with these fields:
+   - name (required, max 100 chars)
+   - description (optional, max 500 chars)
+   - price (required, positive decimal)
+   - category (required, one of: ELECTRONICS, BOOKS, CLOTHING)
+   
+   Include full CRUD with search by category.
+   ```
+4. The agent will autonomously:
+   - Create Entity, Repository, DTOs, Service, Controller
+   - Write unit + integration tests
+   - Run `./mvnw test` to verify
+   - Report what it built
 
 ## 🛡️ FSI Compliance Features
 
@@ -294,6 +321,56 @@ The `.vscode/settings.json` is pre-configured for maximum agentic productivity:
 | `chat.promptFilesLocations` | Points to `.github/prompts/` |
 | `chat.modeFilesLocations` | Points to `.github/chatmodes/` |
 | `github.copilot.chat.codeGeneration.useInstructionFiles` | Enables instruction files |
+
+## 🤖 Full Autonomous Feature Implementation
+
+The key innovation: the agent can implement a **complete feature from a spec** without human intervention.
+
+### What Makes This Possible (Without MCP)
+
+```mermaid
+graph LR
+    subgraph "Autonomy Enablers"
+        A["chat.tools.edits.autoApprove<br/>Agent edits files freely"] --> E
+        B["terminal allowlist<br/>Agent runs mvnw, git, curl"] --> E
+        C["agent.autoFix<br/>Self-corrects errors"] --> E
+        D["agent.runTasks<br/>Runs build tasks"] --> E
+        E["🤖 Autonomous<br/>Feature Pipeline"]
+    end
+    
+    subgraph "What Agent Creates"
+        E --> F["Entity + Repository"]
+        E --> G["Request/Response DTOs"]
+        E --> H["Service + Controller"]
+        E --> I["Unit + Integration Tests"]
+    end
+    
+    subgraph "Quality Gates"
+        F & G & H & I --> J["./mvnw test"]
+        J -->|"✅ Pass"| K["Done"]
+        J -->|"❌ Fail"| L["Auto-fix & Retry"]
+        L --> J
+    end
+
+    style E fill:#27ae60,color:#fff
+    style K fill:#27ae60,color:#fff
+    style L fill:#e67e22,color:#fff
+```
+
+### Key Settings That Enable Autonomy
+
+| Setting | Value | What It Does |
+|---------|-------|-------------|
+| `chat.tools.edits.autoApprove` | `true` | Agent creates/edits files without dialog |
+| `chat.agent.autoFix` | `true` | Agent self-corrects compilation errors |
+| `chat.agent.runTasks` | `true` | Agent runs VS Code build tasks |
+| `chat.agent.maxRequests` | `50` | Allows complex multi-step implementations |
+| `terminal.allowlist` | (regex) | Auto-approves `./mvnw`, `git`, `curl` |
+| `terminal.denylist` | (patterns) | Blocks dangerous commands |
+| `chat.tools.autoApprove` | `false` | ⚠️ Keep false for FSI safety |
+
+### The Pattern The Agent Follows
+The `implement-feature` prompt + `feature-pipeline` instruction file teach the agent to follow an exact 10-step pipeline — matching the existing `Greeting` reference implementation. This is critical: **the agent learns by reading your existing code patterns, not just instructions**.
 
 ## 🤝 Contributing
 
