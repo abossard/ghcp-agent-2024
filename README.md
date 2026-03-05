@@ -20,125 +20,38 @@ In many FSI environments (like Swiss Re), developers face significant restrictio
 
 ```mermaid
 graph TB
-    subgraph "FSI Environment Constraints"
-        MCP["🚫 MCP Blocked<br/>by Policy"]
-        OC["🚫 Open Code<br/>Not Allowed"]
-        LT["⚠️ Limited Premium<br/>Tokens"]
-        WSL["⚠️ WSL2 Copilot<br/>Incompatibility"]
-    end
+    BLOCK["🚫 MCP Blocked · Open Code Blocked"]
+    AVAIL["✅ VS Code + Copilot Agent Mode + CLI"]
 
-    subgraph "What IS Available"
-        VSC["✅ Official VS Code"]
-        GHC["✅ GitHub Copilot"]
-        AM["✅ Agent Mode"]
-        CLI["✅ Terminal/CLI Tools"]
-    end
+    BLOCK -.->|"workaround"| AVAIL
+    AVAIL --> AGENTS["📋 AGENTS.md"]
 
-    subgraph "Agentic Development Layer"
-        direction TB
-        AGENTS["📋 AGENTS.md<br/>Project-wide agent instructions"]
-        
-        subgraph "Custom Agents"
-            DEV["🧑‍💻 Spring Boot Developer"]
-            TEST["🧪 Test Engineer"]
-            SEC["🔒 Security Reviewer"]
-            API["📡 API Designer"]
-            LEAD["🎯 Execution Lead"]
-            DIAG["📊 Diagrammer"]
-        end
-        
-        subgraph "Skills"
-            MVN["🔨 Maven Build"]
-            STEST["🧪 Spring Testing"]
-            APIDEV["📡 API Development"]
-            DBMIG["🗄️ Database Migration"]
-            DIAGSK["📊 Diagramming"]
-        end
-        
-        subgraph "Instructions"
-            JAVA["☕ Java 21 Style"]
-            SB["🌱 Spring Boot"]
-            TSEC["🔒 Security (FSI)"]
-            TINST["🧪 Testing"]
-            RFINST["🔍 Research First"]
-            QGINST["✅ Quality Gates"]
-        end
-        
-        subgraph "Prompts"
-            P1["📝 New REST Endpoint"]
-            P2["📝 Write Tests"]
-            P3["📝 Security Review"]
-            P4["📝 Refactor Service"]
-            P5["📝 Add Entity"]
-        end
-        
-        subgraph "Chat Modes"
-            CM1["💻 Spring Dev Mode"]
-            CM2["🧪 Test Mode"]
-            CM3["👀 Review Mode"]
-        end
-    end
+    AGENTS --> Agents["Agents<br/>Developer · Tester · Reviewer<br/>API Designer · Execution Lead"]
+    AGENTS --> Config["Instructions + Skills + Prompts<br/>Java 21 · Spring Boot · Security<br/>Maven · Testing · Diagramming"]
+    AGENTS --> Modes["Chat Modes<br/>Dev · Test · Review"]
 
-    subgraph "Spring Boot Application"
-        APP["🌱 Spring Boot 3.4.x<br/>Java 21"]
-        CTRL["Controllers"]
-        SVC["Services"]
-        REPO["Repositories"]
-        MOD["Models/Entities"]
-        TESTS["Tests"]
-    end
+    Agents --> APP["🌱 Spring Boot 3.4.x / Java 21<br/>Controller → Service → Repository → Entity"]
+    Config --> APP
+    Modes --> APP
 
-    VSC --> GHC
-    GHC --> AM
-    AM --> AGENTS
-    AGENTS --> DEV & TEST & SEC & API & LEAD & DIAG
-    AM --> MVN & STEST & APIDEV & DBMIG & DIAGSK
-    AM --> JAVA & SB & TSEC & TINST & RFINST & QGINST
-    AM --> P1 & P2 & P3 & P4 & P5
-    AM --> CM1 & CM2 & CM3
-    CLI --> APP
-    DEV --> APP
-    APP --> CTRL --> SVC --> REPO --> MOD
-    APP --> TESTS
-
-    style MCP fill:#ff6b6b,stroke:#c0392b,color:#fff
-    style OC fill:#ff6b6b,stroke:#c0392b,color:#fff
-    style LT fill:#f9ca24,stroke:#f39c12,color:#333
-    style WSL fill:#f9ca24,stroke:#f39c12,color:#333
-    style VSC fill:#27ae60,stroke:#1e8449,color:#fff
-    style GHC fill:#27ae60,stroke:#1e8449,color:#fff
-    style AM fill:#27ae60,stroke:#1e8449,color:#fff
-    style CLI fill:#27ae60,stroke:#1e8449,color:#fff
+    style BLOCK fill:#ff6b6b,stroke:#c0392b,color:#fff
+    style AVAIL fill:#27ae60,stroke:#1e8449,color:#fff
     style AGENTS fill:#3498db,stroke:#2980b9,color:#fff
+    style APP fill:#2c3e50,stroke:#1a252f,color:#fff
 ```
 
 ## 🔧 How Agentic Development Works (Without MCP)
 
 ```mermaid
-flowchart LR
-    subgraph "Developer Workflow"
-        A[Developer opens VS Code] --> B[Copilot Agent Mode]
-        B --> C{Choose Mode}
-        C -->|"Dev"| D[Spring Dev Chatmode]
-        C -->|"Test"| E[Test Chatmode]
-        C -->|"Review"| F[Review Chatmode]
-    end
+flowchart TB
+    A[Developer] --> B{Choose Mode}
+    B -->|Dev| D[Spring Dev]
+    B -->|Test| E[Test Mode]
+    B -->|Review| F[Review Mode]
 
-    subgraph "Agent Pipeline"
-        D --> G[Reads AGENTS.md]
-        G --> H[Loads Instructions]
-        H --> I[Loads Skills]
-        I --> J[Runs CLI Commands]
-        J --> K["./mvnw test"]
-        J --> L["./mvnw compile"]
-        J --> M["git diff"]
-    end
-
-    subgraph "Output"
-        K --> N[✅ Tests Pass]
-        L --> O[✅ Build Success]
-        M --> P[📝 Review Changes]
-    end
+    D & E & F --> G[AGENTS.md → Instructions → Skills]
+    G --> H[CLI: mvnw test · compile · git diff]
+    H --> I[✅ Tests Pass · Build OK · Changes Reviewed]
 
     style D fill:#27ae60,color:#fff
     style E fill:#3498db,color:#fff
@@ -347,28 +260,16 @@ The key innovation: the agent can implement a **complete feature from a spec** w
 ### What Makes This Possible (Without MCP)
 
 ```mermaid
-graph LR
+graph TB
     subgraph "Autonomy Enablers"
-        A["chat.tools.edits.autoApprove<br/>Agent edits files freely"] --> E
-        B["terminal allowlist<br/>Agent runs mvnw, git, curl"] --> E
-        C["agent.autoFix<br/>Self-corrects errors"] --> E
-        D["agent.runTasks<br/>Runs build tasks"] --> E
-        E["🤖 Autonomous<br/>Feature Pipeline"]
+        A["autoApprove edits"] & B["terminal allowlist"] & C["autoFix"] & D["runTasks"]
     end
-    
-    subgraph "What Agent Creates"
-        E --> F["Entity + Repository"]
-        E --> G["Request/Response DTOs"]
-        E --> H["Service + Controller"]
-        E --> I["Unit + Integration Tests"]
-    end
-    
-    subgraph "Quality Gates"
-        F & G & H & I --> J["./mvnw test"]
-        J -->|"✅ Pass"| K["Done"]
-        J -->|"❌ Fail"| L["Auto-fix & Retry"]
-        L --> J
-    end
+
+    A & B & C & D --> E["🤖 Autonomous Pipeline"]
+    E --> F["Entity · DTOs · Service · Controller · Tests"]
+    F --> J["./mvnw test"]
+    J -->|"✅ Pass"| K["Done"]
+    J -->|"❌ Fail"| L["Auto-fix & Retry"] --> J
 
     style E fill:#27ae60,color:#fff
     style K fill:#27ae60,color:#fff
@@ -506,36 +407,18 @@ An instruction (applied to `**/*.java`) that enforces minimum quality standards.
 
 ```mermaid
 graph TB
-    subgraph "New Capabilities"
-        RF["🔍 Research-First<br/>(instruction)"]
-        QG["✅ Quality Gates<br/>(instruction)"]
-        EL["🎯 Execution Lead<br/>(agent)"]
-        DIAG["📊 Diagrammer<br/>(agent + skill)"]
-        ERD["📋 ERD Generator<br/>(prompt)"]
-    end
+    RF["🔍 Research-First"] & QG["✅ Quality Gates"]
+    EL["🎯 Execution Lead"]
 
-    subgraph "Existing Agents"
-        API["API Designer"]
-        DEV["Spring Boot Developer"]
-        TEST["Test Engineer"]
-        SEC["Security Reviewer"]
-    end
-
-    EL -->|"Step 2"| API
-    EL -->|"Step 3"| DEV
-    EL -->|"Step 4"| TEST
-    EL -->|"Step 5"| SEC
-    EL -->|"Step 6"| DIAG
-    ERD -->|"triggers"| DIAG
-
-    RF -.->|"auto-injected"| EL & API & DEV & TEST & SEC & DIAG
-    QG -.->|"auto-injected"| DEV & TEST
+    RF & QG -.->|auto-injected| EL
+    EL --> API["API Designer"] --> DEV["Developer"]
+    DEV --> TEST["Tester"] --> SEC["Reviewer"]
+    SEC --> DIAG["📊 Diagrammer"]
 
     style EL fill:#3498db,color:#fff
     style DIAG fill:#27ae60,color:#fff
     style RF fill:#f39c12,color:#fff
     style QG fill:#e74c3c,color:#fff
-    style ERD fill:#9b59b6,color:#fff
 ```
 
 ## 🤝 Contributing
