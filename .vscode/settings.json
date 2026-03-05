@@ -1,183 +1,180 @@
 {
-    // ============================================================
-    // VS Code Workspace Settings for Agentic Spring Boot Development
-    // Optimized for FSI environment — NO MCP, CLI-focused
-    // ============================================================
+  // ============================================================
+  // VS Code Workspace Settings for Agentic Spring Boot Development
+  // Optimized for FSI environment — NO MCP, CLI-focused
+  // ============================================================
 
-    // ── Java & Spring Boot Configuration ─────────────────────────
-    "java.configuration.updateBuildConfiguration": "automatic",
-    "java.compile.nullAnalysis.mode": "automatic",
-    "java.autobuild.enabled": true,
-    "java.saveActions.organizeImports": true,
-    "java.format.enabled": true,
-    "java.implementation.codeLens.enabled": true,
-    "java.references.codeLens.enabled": true,
-    "java.inlayHints.parameterNames.enabled": "all",
-    "java.sources.organizeImports.starThreshold": 999,
-    "java.sources.organizeImports.staticStarThreshold": 999,
-    "java.completion.importOrder": [
-        "java",
-        "jakarta",
-        "javax",
-        "org.springframework",
-        "com",
-        ""
-    ],
-    "spring-boot.ls.problem.application-properties.UNKNOWN_PROPERTY": "WARNING",
+  // ── Java & Spring Boot Configuration ─────────────────────────
+  "java.configuration.updateBuildConfiguration": "automatic",
+  "java.compile.nullAnalysis.mode": "automatic",
+  "java.autobuild.enabled": true,
+  "java.saveActions.organizeImports": true,
+  "java.format.enabled": true,
+  "java.implementation.codeLens.enabled": true,
+  "java.references.codeLens.enabled": true,
+  "java.inlayHints.parameterNames.enabled": "all",
+  "java.sources.organizeImports.starThreshold": 999,
+  "java.sources.organizeImports.staticStarThreshold": 999,
+  "java.completion.importOrder": [
+    "java",
+    "jakarta",
+    "javax",
+    "org.springframework",
+    "com",
+    ""
+  ],
+  "spring-boot.ls.problem.application-properties.UNKNOWN_PROPERTY": "WARNING",
 
-    // ── Editor Behavior ──────────────────────────────────────────
-    "editor.formatOnSave": true,
-    "editor.formatOnPaste": false,
-    "editor.codeActionsOnSave": {
-        "source.organizeImports": "explicit"
-    },
-    "editor.minimap.enabled": false,
-    "editor.renderWhitespace": "boundary",
-    "editor.tabSize": 4,
-    "editor.insertSpaces": true,
-    "editor.rulers": [120],
-    "editor.wordWrap": "off",
-    "editor.bracketPairColorization.enabled": true,
-    "editor.guides.bracketPairs": "active",
+  // ── Editor Behavior ──────────────────────────────────────────
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": false,
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "explicit"
+  },
+  "editor.minimap.enabled": false,
+  "editor.renderWhitespace": "boundary",
+  "editor.tabSize": 4,
+  "editor.insertSpaces": true,
+  "editor.rulers": [120],
+  "editor.wordWrap": "off",
+  "editor.bracketPairColorization.enabled": true,
+  "editor.guides.bracketPairs": "active",
 
-    // ── File Exclusions ──────────────────────────────────────────
-    "files.exclude": {
-        "**/.classpath": true,
-        "**/.factorypath": true,
-        "**/.project": true,
-        "**/.settings": true,
-        "**/target": true,
-        "**/.idea": true,
-        "**/*.iml": true
-    },
-    "files.watcherExclude": {
-        "**/target/**": true,
-        "**/.git/objects/**": true,
-        "**/.git/subtree-cache/**": true
-    },
+  // ── File Exclusions ──────────────────────────────────────────
+  "files.exclude": {
+    "**/.classpath": true,
+    "**/.factorypath": true,
+    "**/.project": true,
+    "**/.settings": true,
+    "**/target": true,
+    "**/.idea": true,
+    "**/*.iml": true
+  },
+  "files.watcherExclude": {
+    "**/target/**": true,
+    "**/.git/objects/**": true,
+    "**/.git/subtree-cache/**": true
+  },
 
-    // ── Search Exclusions ────────────────────────────────────────
-    "search.exclude": {
-        "**/target": true,
-        "**/.git": true,
-        "**/node_modules": true,
-        "**/*.class": true
-    },
+  // ── Search Exclusions ────────────────────────────────────────
+  "search.exclude": {
+    "**/target": true,
+    "**/.git": true,
+    "**/node_modules": true,
+    "**/*.class": true
+  },
 
-    // ── Terminal Configuration ────────────────────────────────────
-    "terminal.integrated.defaultProfile.windows": "Git Bash",
-    "terminal.integrated.scrollback": 10000,
-    "terminal.integrated.enableMultiLinePasteWarning": "never",
+  // ── Terminal Configuration ────────────────────────────────────
+  "terminal.integrated.defaultProfile.windows": "Git Bash",
+  "terminal.integrated.scrollback": 10000,
+  "terminal.integrated.enableMultiLinePasteWarning": "never",
 
-    // ============================================================
-    // GitHub Copilot — Agent Mode Configuration (NO MCP)
-    // ============================================================
+  // ============================================================
+  // GitHub Copilot — Agent Mode Configuration (NO MCP)
+  // ============================================================
 
-    // ── Core Copilot Settings ────────────────────────────────────
-    "github.copilot.enable": {
-        "*": true,
-        "yaml": true,
-        "markdown": true,
-        "java": true,
-        "xml": true,
-        "properties": true
-    },
+  // ── Core Copilot Settings ────────────────────────────────────
+  "github.copilot.enable": {
+    "*": true,
+    "yaml": true,
+    "markdown": true,
+    "java": true,
+    "xml": true,
+    "properties": true
+  },
 
-    // ── Chat & Agent Mode ────────────────────────────────────────
-    "chat.commandCenter.enabled": true,
-    "chat.agent.enabled": true,
-    "chat.agent.maxRequests": 50,
+  // ── Chat & Agent Mode ────────────────────────────────────────
+  "chat.commandCenter.enabled": true,
+  "chat.agent.enabled": true,
+  "chat.agent.maxRequests": 50,
 
-    // ── Auto-Approve for Autonomous Workflows ────────────────────
-    // Set to true for full-auto "YOLO" mode (only in trusted dev environments!)
-    // Set to false for manual approval of each tool action (safer for FSI)
-    "chat.tools.autoApprove": false,
+  // ── Auto-Approve for Autonomous Workflows ────────────────────
+  // Set to true for full-auto "YOLO" mode (only in trusted dev environments!)
+  // Set to false for manual approval of each tool action (safer for FSI)
+  "chat.tools.autoApprove": false,
 
-    // Auto-approve file edits by the agent (reduces friction significantly)
-    // The agent can create/edit files without confirmation dialogs
-    "chat.tools.edits.autoApprove": true,
+  // Auto-approve file edits by the agent (reduces friction significantly)
+  // Controlled by chat.tools.autoApprove above
 
-    // Auto-fix compilation errors after edits (agent self-corrects)
-    "github.copilot.chat.agent.autoFix": true,
+  // Auto-fix compilation errors after edits (agent self-corrects)
+  "github.copilot.chat.agent.autoFix": true,
 
-    // Allow agent to run VS Code tasks (build, test) autonomously
-    "github.copilot.chat.agent.runTasks": true,
+  // Allow agent to run VS Code tasks (build, test) autonomously
+  "github.copilot.chat.agent.runTasks": true,
 
-    // ── Instruction Files ────────────────────────────────────────
-    "github.copilot.chat.codeGeneration.useInstructionFiles": true,
-    "chat.instructionsFilesLocations": {
-        ".github/instructions": true
-    },
+  // ── Instruction Files ────────────────────────────────────────
+  "github.copilot.chat.codeGeneration.useInstructionFiles": true,
+  "chat.instructionsFilesLocations": {
+    ".github/instructions": true
+  },
 
-    // ── Prompt Files ─────────────────────────────────────────────
-    "chat.promptFiles": true,
-    "chat.promptFilesLocations": {
-        ".github/prompts": true
-    },
+  // ── Prompt Files ─────────────────────────────────────────────
+  "chat.promptFiles": true,
+  "chat.promptFilesLocations": {
+    ".github/prompts": true
+  },
 
-    // ── Chat Modes ───────────────────────────────────────────────
-    "chat.modeFilesLocations": {
-        ".github/chatmodes": true
-    },
+  // ── Chat Modes (migrated to .github/agents/) ──────────────
+  // chatmodes dir no longer needed — agents are in .github/agents/
 
-    // ── Terminal Tool — Auto-Approve Safe Commands ───────────────
-    // These are the Java/Spring Boot CLI commands agents can run
-    // without manual approval, maximizing agentic flow.
-    "github.copilot.chat.tools.terminal.allowlist": [
-        "^\\./mvnw (clean|compile|test|package|verify|install|dependency:tree|spring-boot:run|versions:display-dependency-updates)( .*)?$",
-        "^mvn (clean|compile|test|package|verify|install|dependency:tree|spring-boot:run)( .*)?$",
-        "^java (-version|-jar|--version)( .*)?$",
-        "^git (status|log|diff|branch|add|commit|show|stash|remote|fetch|pull|push|checkout|switch|restore|tag|rebase|merge|cherry-pick)( .*)?$",
-        "^curl (-s|-v|-X|--silent|--header|--data|http)( .*)?$",
-        "^(ls|pwd|cat|head|tail|wc|find|grep|sort|uniq|tr|cut|sed|awk|tee|mkdir|cp|mv|touch|echo|printf|date|whoami|which|where|type|file|du|df)( .*)?$",
-        "^(tree|less|more|diff|patch)( .*)?$",
-        "^docker (ps|images|logs|inspect|build|run|stop|rm|exec|compose)( .*)?$",
-        "^(jps|jstack|jmap|jstat|jinfo|jcmd)( .*)?$"
-    ],
+  // ── Terminal Tool — Auto-Approve Safe Commands ───────────────
+  // These are the Java/Spring Boot CLI commands agents can run
+  // without manual approval, maximizing agentic flow.
+  "github.copilot.chat.tools.terminal.allowlist": [
+    "^\\./mvnw (clean|compile|test|package|verify|install|dependency:tree|spring-boot:run|versions:display-dependency-updates)( .*)?$",
+    "^mvn (clean|compile|test|package|verify|install|dependency:tree|spring-boot:run)( .*)?$",
+    "^java (-version|-jar|--version)( .*)?$",
+    "^git (status|log|diff|branch|add|commit|show|stash|remote|fetch|pull|push|checkout|switch|restore|tag|rebase|merge|cherry-pick)( .*)?$",
+    "^curl (-s|-v|-X|--silent|--header|--data|http)( .*)?$",
+    "^(ls|pwd|cat|head|tail|wc|find|grep|sort|uniq|tr|cut|sed|awk|tee|mkdir|cp|mv|touch|echo|printf|date|whoami|which|where|type|file|du|df)( .*)?$",
+    "^(tree|less|more|diff|patch)( .*)?$",
+    "^docker (ps|images|logs|inspect|build|run|stop|rm|exec|compose)( .*)?$",
+    "^(jps|jstack|jmap|jstat|jinfo|jcmd)( .*)?$"
+  ],
 
-    // ── Terminal Tool — Deny Dangerous Commands ──────────────────
-    "github.copilot.chat.tools.terminal.denylist": [
-        "rm -rf /",
-        "rm -rf ~",
-        "sudo",
-        "format",
-        "del /",
-        "rmdir /s",
-        "mkfs",
-        "dd if=",
-        ":(){:|:&};:",
-        "chmod -R 777",
-        "wget.*\\|.*sh",
-        "curl.*\\|.*sh"
-    ],
+  // ── Terminal Tool — Deny Dangerous Commands ──────────────────
+  "github.copilot.chat.tools.terminal.denylist": [
+    "rm -rf /",
+    "rm -rf ~",
+    "sudo",
+    "format",
+    "del /",
+    "rmdir /s",
+    "mkfs",
+    "dd if=",
+    ":(){:|:&};:",
+    "chmod -R 777",
+    "wget.*\\|.*sh",
+    "curl.*\\|.*sh"
+  ],
 
-    // ── MCP — Explicitly Disabled ────────────────────────────────
-    // MCP is blocked by organizational policy. Do NOT configure any MCP servers.
-    "github.copilot.chat.agent.thirdParty.autoApprove": false,
+  // ── MCP — Explicitly Disabled ────────────────────────────────
+  // MCP is blocked by organizational policy. Do NOT configure any MCP servers.
+  "github.copilot.chat.agent.thirdParty.autoApprove": false,
 
-    // ── Code Generation Preferences ──────────────────────────────
-    "github.copilot.chat.localeOverride": "en",
+  // ── Code Generation Preferences ──────────────────────────────
+  "github.copilot.chat.localeOverride": "en",
 
-    // ── Testing ──────────────────────────────────────────────────
-    "java.test.defaultConfig": "default",
-    "java.test.config": [
-        {
-            "name": "default",
-            "vmArgs": ["-ea"]
-        }
-    ],
+  // ── Testing ──────────────────────────────────────────────────
+  "java.test.defaultConfig": "default",
+  "java.test.config": [
+    {
+      "name": "default",
+      "vmArgs": ["-ea"]
+    }
+  ],
 
-    // ── XML (for pom.xml editing) ────────────────────────────────
-    "xml.format.enabled": true,
-    "xml.validation.enabled": true,
+  // ── XML (for pom.xml editing) ────────────────────────────────
+  "xml.format.enabled": true,
+  "xml.validation.enabled": true,
 
-    // ── Git ──────────────────────────────────────────────────────
-    "git.autofetch": true,
-    "git.confirmSync": false,
-    "git.enableSmartCommit": true,
+  // ── Git ──────────────────────────────────────────────────────
+  "git.autofetch": true,
+  "git.confirmSync": false,
+  "git.enableSmartCommit": true,
 
-    // ── Debugging ────────────────────────────────────────────────
-    "java.debug.settings.hotCodeReplace": "auto",
-    "java.debug.settings.enableRunDebugCodeLens": true,
-    "java.debug.settings.console": "integratedTerminal"
+  // ── Debugging ────────────────────────────────────────────────
+  "java.debug.settings.hotCodeReplace": "auto",
+  "java.debug.settings.enableRunDebugCodeLens": true,
+  "java.debug.settings.console": "integratedTerminal"
 }

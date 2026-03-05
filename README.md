@@ -43,6 +43,8 @@ graph TB
             TEST["🧪 Test Engineer"]
             SEC["🔒 Security Reviewer"]
             API["📡 API Designer"]
+            LEAD["🎯 Execution Lead"]
+            DIAG["📊 Diagrammer"]
         end
         
         subgraph "Skills"
@@ -50,6 +52,7 @@ graph TB
             STEST["🧪 Spring Testing"]
             APIDEV["📡 API Development"]
             DBMIG["🗄️ Database Migration"]
+            DIAGSK["📊 Diagramming"]
         end
         
         subgraph "Instructions"
@@ -57,6 +60,8 @@ graph TB
             SB["🌱 Spring Boot"]
             TSEC["🔒 Security (FSI)"]
             TINST["🧪 Testing"]
+            RFINST["🔍 Research First"]
+            QGINST["✅ Quality Gates"]
         end
         
         subgraph "Prompts"
@@ -86,9 +91,9 @@ graph TB
     VSC --> GHC
     GHC --> AM
     AM --> AGENTS
-    AGENTS --> DEV & TEST & SEC & API
-    AM --> MVN & STEST & APIDEV & DBMIG
-    AM --> JAVA & SB & TSEC & TINST
+    AGENTS --> DEV & TEST & SEC & API & LEAD & DIAG
+    AM --> MVN & STEST & APIDEV & DBMIG & DIAGSK
+    AM --> JAVA & SB & TSEC & TINST & RFINST & QGINST
     AM --> P1 & P2 & P3 & P4 & P5
     AM --> CM1 & CM2 & CM3
     CLI --> APP
@@ -159,13 +164,17 @@ flowchart LR
 │   │   ├── spring-boot-developer.md   #    Full-stack Spring Boot developer
 │   │   ├── test-engineer.md           #    Testing specialist
 │   │   ├── security-reviewer.md       #    FSI security reviewer
-│   │   └── api-designer.md            #    REST API designer
+│   │   ├── api-designer.md            #    REST API designer
+│   │   ├── execution-lead.agent.md    #    🆕 Pipeline orchestrator
+│   │   └── diagrammer.agent.md        #    🆕 Architecture & ERD diagrams
 │   │
 │   ├── instructions/                  # 📝 Context-specific instructions
 │   │   ├── java.instructions.md       #    Java 21 coding style
 │   │   ├── spring-boot.instructions.md#    Spring Boot patterns
 │   │   ├── testing.instructions.md    #    Testing conventions
-│   │   └── security.instructions.md   #    FSI security requirements
+│   │   ├── security.instructions.md   #    FSI security requirements
+│   │   ├── research-first.instructions.md  # 🆕 Research before implementation
+│   │   └── quality-gates.instructions.md   # 🆕 Automated quality enforcement
 │   │
 │   ├── prompts/                       # ⚡ Reusable prompt templates
 │   │   ├── new-rest-endpoint.prompt.md#    Create complete REST endpoint
@@ -173,7 +182,9 @@ flowchart LR
 │   │   ├── security-review.prompt.md  #    Run security audit
 │   │   ├── refactor-service.prompt.md #    Refactor a service
 │   │   ├── add-entity.prompt.md       #    Add JPA entity
-│   │   └── explain-codebase.prompt.md #    Explain architecture
+│   │   ├── explain-codebase.prompt.md #    Explain architecture
+│   │   ├── generate-erd.prompt.md     #    🆕 Generate JPA ERD diagram
+│   │   └── generate-architecture-diagram.prompt.md # 🆕 Architecture diagram
 │   │
 │   ├── chatmodes/                     # 🎭 Custom chat modes
 │   │   ├── spring-dev.chatmode.md     #    Development mode
@@ -184,7 +195,14 @@ flowchart LR
 │       ├── maven-build/SKILL.md       #    Maven build automation
 │       ├── spring-testing/SKILL.md    #    Spring Boot testing
 │       ├── api-development/SKILL.md   #    REST API development
-│       └── database-migration/SKILL.md#    Database schema management
+│       ├── database-migration/SKILL.md#    Database schema management
+│       └── diagramming/SKILL.md       #    🆕 Architecture & ERD diagrams
+│
+├── docs/diagrams/                     # 📊 Generated diagram output
+│   ├── architecture.py                #    Architecture diagram source
+│   ├── architecture.png               #    Rendered architecture
+│   ├── erd.py                         #    ERD source
+│   └── erd.png                        #    Rendered ERD
 │
 ├── docs/                              # 📚 Research & documentation
 │   ├── research-notes.md              #    Deep research findings
@@ -371,6 +389,154 @@ graph LR
 
 ### The Pattern The Agent Follows
 The `implement-feature` prompt + `feature-pipeline` instruction file teach the agent to follow an exact 10-step pipeline — matching the existing `Greeting` reference implementation. This is critical: **the agent learns by reading your existing code patterns, not just instructions**.
+
+## 📊 New: Diagramming, Orchestration & Quality Gates
+
+Five new capabilities inspired by [petender/tdd-azd-demo-builder](https://github.com/petender/tdd-azd-demo-builder), adapted for Spring Boot / Java 21.
+
+### 1. Diagrammer Agent — Architecture & ERD Diagrams
+
+Automatically generates PNG architecture diagrams and JPA Entity-Relationship Diagrams by scanning your source code.
+
+**How to use:**
+```
+# In VS Code Copilot Chat, select the "A24 Diagrammer" agent, then:
+Generate an architecture diagram for this project
+
+# Or use the prompts:
+/generate-erd
+/generate-architecture-diagram
+```
+
+**What it does:**
+- Reads `pom.xml`, `application.yml`, controllers, services, repositories
+- Generates Python scripts using the `diagrams` library
+- Executes them to produce PNG images in `docs/diagrams/`
+- For ERDs: scans `@Entity` classes, extracts fields, relationships, and annotations
+
+**Prerequisites** (installed automatically by the agent):
+```bash
+pip install diagrams graphviz
+brew install graphviz  # macOS
+```
+
+**Output:**
+| File | Content |
+|---|---|
+| `docs/diagrams/architecture.py` | Architecture diagram source |
+| `docs/diagrams/architecture.png` | Rendered architecture diagram |
+| `docs/diagrams/erd.py` | ERD source |
+| `docs/diagrams/erd.png` | Rendered Entity-Relationship Diagram |
+
+### 2. Research-First Instruction — Think Before You Code
+
+A global instruction (applied to `**`) that forces ALL agents to research before implementing.
+
+**How it works:**
+- Automatically injected into every agent's context
+- Requires agents to read existing code, patterns, and conventions before creating files
+- Enforces an 80% confidence gate — agents must understand what to build before building it
+
+**No action needed** — this is auto-injected. It improves output quality across all agents.
+
+### 3. Execution Lead — End-to-End Feature Pipeline
+
+An orchestrator agent that builds complete features by delegating to specialized agents in sequence.
+
+**How to use:**
+```
+# In VS Code Copilot Chat, select "A24 Execution Lead", then describe your feature:
+
+Create a "Product" feature with fields:
+- name (required, max 100 chars)
+- description (optional, max 500 chars)
+- price (required, positive decimal)
+- category (enum: ELECTRONICS, BOOKS, CLOTHING)
+Include CRUD with search by category.
+```
+
+**The pipeline:**
+```
+Step 1: Requirements    → Execution Lead parses your description
+Step 2: API Design      → Delegates to API Designer
+Step 3: Implement       → Delegates to Spring Boot Developer
+Step 4: Test            → Delegates to Test Engineer
+Step 5: Security Review → Delegates to Security Reviewer
+Step 6: Diagram         → Delegates to Diagrammer (optional)
+```
+
+**Each step produces artifacts the next step reads** — agents communicate through files, not messages.
+
+### 4. JPA ERD Generator — Auto-Document Your Data Model
+
+A dedicated prompt that scans all `@Entity` classes and generates a professional ERD.
+
+**How to use:**
+```
+/generate-erd
+```
+
+**What it extracts from your code:**
+| JPA Annotation | ERD Element |
+|---|---|
+| `@Id` | Primary Key 🔑 |
+| `@ManyToOne` | Foreign Key 🔗 + N:1 arrow |
+| `@OneToMany` | 1:N relationship arrow |
+| `@ManyToMany` | N:M relationship via junction |
+| `@Column(nullable=false)` | NOT NULL constraint |
+| `@Enumerated` | ENUM type |
+
+### 5. Quality Gates — Automated Enforcement
+
+An instruction (applied to `**/*.java`) that enforces minimum quality standards.
+
+**Gates enforced:**
+
+| Gate | Requirement |
+|---|---|
+| **Test** | All tests pass, minimum 3 per service + 3 per controller |
+| **Build** | Zero compilation errors |
+| **Security** | No hardcoded secrets, `@Valid` on all request bodies, no `System.out` |
+| **Naming** | Test methods follow `should{Expected}When{Condition}` |
+| **Git** | No secrets in diff, conventional commit messages |
+
+**No action needed** — auto-injected for all `.java` files. Agents are blocked from reporting success if any gate fails.
+
+### How These 5 Features Work Together
+
+```mermaid
+graph TB
+    subgraph "New Capabilities"
+        RF["🔍 Research-First<br/>(instruction)"]
+        QG["✅ Quality Gates<br/>(instruction)"]
+        EL["🎯 Execution Lead<br/>(agent)"]
+        DIAG["📊 Diagrammer<br/>(agent + skill)"]
+        ERD["📋 ERD Generator<br/>(prompt)"]
+    end
+
+    subgraph "Existing Agents"
+        API["API Designer"]
+        DEV["Spring Boot Developer"]
+        TEST["Test Engineer"]
+        SEC["Security Reviewer"]
+    end
+
+    EL -->|"Step 2"| API
+    EL -->|"Step 3"| DEV
+    EL -->|"Step 4"| TEST
+    EL -->|"Step 5"| SEC
+    EL -->|"Step 6"| DIAG
+    ERD -->|"triggers"| DIAG
+
+    RF -.->|"auto-injected"| EL & API & DEV & TEST & SEC & DIAG
+    QG -.->|"auto-injected"| DEV & TEST
+
+    style EL fill:#3498db,color:#fff
+    style DIAG fill:#27ae60,color:#fff
+    style RF fill:#f39c12,color:#fff
+    style QG fill:#e74c3c,color:#fff
+    style ERD fill:#9b59b6,color:#fff
+```
 
 ## 🤝 Contributing
 
