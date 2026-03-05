@@ -1,0 +1,22 @@
+{
+    "recommendations": [
+        "vscjava.vscode-java-pack",
+        "vmware.vscode-spring-boot",
+        "vscjava.vscode-spring-initializr",
+        "vscjava.vscode-spring-boot-dashboard",
+        "redhat.java",
+        "vscjava.vscode-java-debug",
+        "vscjava.vscode-java-test",
+        "vscjava.vscode-maven",
+        "vscjava.vscode-java-dependency",
+        "VisualStudioExptTeam.vscodeintellicode",
+        "GitHub.copilot",
+        "GitHub.copilot-chat",
+        "eamodio.gitlens",
+        "redhat.vscode-xml",
+        "redhat.vscode-yaml",
+        "sonarsource.sonarlint-vscode",
+        "shengchen.vscode-checkstyle"
+    ],
+    "unwantedRecommendations": []
+}
