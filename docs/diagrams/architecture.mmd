@@ -1,0 +1,28 @@
+graph LR
+  subgraph Clients
+    user["👤 Clients"]
+  end
+
+  subgraph app["Spring Boot Application"]
+    subgraph controllers["Controllers"]
+      gc["GreetingController"]
+      hc["HealthController"]
+    end
+    subgraph services["Services"]
+      gs["GreetingService"]
+    end
+    subgraph repositories["Repositories"]
+      gr["GreetingRepository"]
+    end
+    subgraph config["Config"]
+      eh["GlobalExceptionHandler"]
+    end
+    gc --> gs
+    gs --> gr
+  end
+
+  db[("H2 Database")]
+
+  user -->|"HTTP REST"| gc
+  user -->|"GET /health"| hc
+  gr -->|"JPA / Spring Data"| db

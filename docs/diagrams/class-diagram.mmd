@@ -1,0 +1,30 @@
+classDiagram
+    class GreetingController {
+        -GreetingService greetingService
+        +getAllGreetings() List~GreetingResponse~
+        +getGreetingById(Long id) ResponseEntity~GreetingResponse~
+        +createGreeting(CreateGreetingRequest request) GreetingResponse
+    }
+    class GreetingService {
+        -GreetingRepository repository
+        +findAll() List~Greeting~
+        +findById(Long id) Optional~Greeting~
+        +create(CreateGreetingRequest request) Greeting
+    }
+    class GreetingRepository {
+        +findById(Long id) Optional~Greeting~
+        +save(Greeting entity) Greeting
+        +findAll() List~Greeting~
+    }
+    class Greeting {
+        -Long id
+        -String message
+        -String language
+        +getId() Long
+        +getMessage() String
+        +getLanguage() String
+    }
+    GreetingController --> GreetingService : uses
+    GreetingService --> GreetingRepository : uses
+    GreetingService --> Greeting : creates
+    GreetingRepository --> Greeting : manages
