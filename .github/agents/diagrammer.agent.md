@@ -78,14 +78,14 @@ Run Architecture + ERD + Class Diagram workflows sequentially.
 
 ## Output Files
 
-| Artifact                    | Location                           |
-| --------------------------- | ---------------------------------- |
-| Architecture diagram source | `docs/diagrams/architecture.mmd`   |
-| Architecture diagram image  | `docs/diagrams/architecture.svg`   |
-| ERD source                  | `docs/diagrams/erd.mmd`            |
-| ERD image                   | `docs/diagrams/erd.svg`            |
-| Class diagram source        | `docs/diagrams/class-diagram.mmd`  |
-| Class diagram image         | `docs/diagrams/class-diagram.svg`  |
+| Artifact                    | Location                          |
+| --------------------------- | --------------------------------- |
+| Architecture diagram source | `docs/diagrams/architecture.mmd`  |
+| Architecture diagram image  | `docs/diagrams/architecture.svg`  |
+| ERD source                  | `docs/diagrams/erd.mmd`           |
+| ERD image                   | `docs/diagrams/erd.svg`           |
+| Class diagram source        | `docs/diagrams/class-diagram.mmd` |
+| Class diagram image         | `docs/diagrams/class-diagram.svg` |
 
 ## Validation Checklist
 

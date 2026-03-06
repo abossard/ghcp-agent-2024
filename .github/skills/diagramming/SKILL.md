@@ -179,23 +179,23 @@ erDiagram
 
 When scanning Java `@Entity` classes, map annotations to Mermaid `erDiagram` elements:
 
-| JPA Annotation            | Mermaid ERD Element                      |
-| ------------------------- | ---------------------------------------- |
-| `@Id`                     | `PK` marker after type                   |
-| `@GeneratedValue`         | `"auto-generated"` comment               |
-| `@Column(nullable=false)` | `"not null"` comment                     |
-| `@Column(unique=true)`    | `UK` marker after type                   |
-| `@Column(length=N)`       | `VARCHAR` (length in comment)            |
-| `@ManyToOne`              | `FK` marker + `\|\|--o{` relationship    |
-| `@OneToMany`              | `\|\|--o{` relationship from parent      |
-| `@ManyToMany`             | `}o--o{` relationship (via junction)     |
-| `@OneToOne`               | `\|\|--\|\|` relationship                |
-| `String` field            | `VARCHAR`                                |
-| `Long` / `Integer`        | `BIGINT` / `INT`                         |
-| `LocalDateTime`           | `TIMESTAMP`                              |
-| `BigDecimal`              | `DECIMAL`                                |
-| `Boolean`                 | `BOOLEAN`                                |
-| `@Enumerated`             | `VARCHAR` with `"enum"` comment          |
+| JPA Annotation            | Mermaid ERD Element                   |
+| ------------------------- | ------------------------------------- |
+| `@Id`                     | `PK` marker after type                |
+| `@GeneratedValue`         | `"auto-generated"` comment            |
+| `@Column(nullable=false)` | `"not null"` comment                  |
+| `@Column(unique=true)`    | `UK` marker after type                |
+| `@Column(length=N)`       | `VARCHAR` (length in comment)         |
+| `@ManyToOne`              | `FK` marker + `\|\|--o{` relationship |
+| `@OneToMany`              | `\|\|--o{` relationship from parent   |
+| `@ManyToMany`             | `}o--o{` relationship (via junction)  |
+| `@OneToOne`               | `\|\|--\|\|` relationship             |
+| `String` field            | `VARCHAR`                             |
+| `Long` / `Integer`        | `BIGINT` / `INT`                      |
+| `LocalDateTime`           | `TIMESTAMP`                           |
+| `BigDecimal`              | `DECIMAL`                             |
+| `Boolean`                 | `BOOLEAN`                             |
+| `@Enumerated`             | `VARCHAR` with `"enum"` comment       |
 
 ### Example: Scanning the Greeting Entity
 
@@ -308,39 +308,39 @@ graph LR
 
 ### Connection Types
 
-| Syntax    | Description              | Use For                    |
-| --------- | ------------------------ | -------------------------- |
-| `-->`     | Solid arrow              | Data flow, dependencies    |
-| `-.->` | Dashed arrow             | Async, monitoring, optional |
-| `==>`     | Thick arrow              | Primary/critical path      |
-| `---`     | Solid no arrow           | Association                |
-| `<-->`    | Bidirectional            | WebSocket, sync            |
-| `--x`     | Cross end                | Blocked/failed             |
+| Syntax | Description    | Use For                     |
+| ------ | -------------- | --------------------------- |
+| `-->`  | Solid arrow    | Data flow, dependencies     |
+| `-.->` | Dashed arrow   | Async, monitoring, optional |
+| `==>`  | Thick arrow    | Primary/critical path       |
+| `---`  | Solid no arrow | Association                 |
+| `<-->` | Bidirectional  | WebSocket, sync             |
+| `--x`  | Cross end      | Blocked/failed              |
 
 ## 6. Node Shapes Quick Reference
 
-| Syntax           | Shape         | Use For                     |
-| ---------------- | ------------- | --------------------------- |
-| `["text"]`       | Rectangle     | Services, components        |
-| `[("text")]`     | Cylinder      | Databases, storage          |
-| `{"text"}`       | Diamond       | Decision, load balancer     |
-| `(["text"])`     | Stadium       | Start/end                   |
-| `(("text"))`     | Circle        | Simple node                 |
-| `[/"text"/]`     | Parallelogram | Input/output                |
-| `>"text"]`       | Flag          | Events                      |
-| `{{"text"}}`     | Hexagon       | Background jobs, processors |
-| `["text<br/>more"]` | Multi-line | Long descriptions            |
+| Syntax              | Shape         | Use For                     |
+| ------------------- | ------------- | --------------------------- |
+| `["text"]`          | Rectangle     | Services, components        |
+| `[("text")]`        | Cylinder      | Databases, storage          |
+| `{"text"}`          | Diamond       | Decision, load balancer     |
+| `(["text"])`        | Stadium       | Start/end                   |
+| `(("text"))`        | Circle        | Simple node                 |
+| `[/"text"/]`        | Parallelogram | Input/output                |
+| `>"text"]`          | Flag          | Events                      |
+| `{{"text"}}`        | Hexagon       | Background jobs, processors |
+| `["text<br/>more"]` | Multi-line    | Long descriptions           |
 
 ## 7. Themes
 
 Available via CLI `--theme` flag:
 
-| Theme       | Description                    |
-| ----------- | ------------------------------ |
-| `default`   | Blue/grey — good for docs      |
-| `forest`    | Green — nature palette         |
-| `dark`      | Dark background                |
-| `neutral`   | Minimal black & white          |
+| Theme     | Description               |
+| --------- | ------------------------- |
+| `default` | Blue/grey — good for docs |
+| `forest`  | Green — nature palette    |
+| `dark`    | Dark background           |
+| `neutral` | Minimal black & white     |
 
 ```bash
 npx --yes @mermaid-js/mermaid-cli -i input.mmd -o output.svg -t forest -q
