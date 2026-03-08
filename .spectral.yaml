@@ -1,0 +1,25 @@
+extends:
+  - "spectral:oas"
+
+rules:
+  # Enforce operation IDs on all endpoints
+  operation-operationId: error
+
+  # Require descriptions on operations
+  operation-description: warn
+
+  # Require descriptions on parameters
+  oas3-valid-schema-example: warn
+
+  # Enforce consistent naming (kebab-case paths)
+  paths-kebab-case:
+    description: Paths should be kebab-case
+    severity: warn
+    given: "$.paths[*]~"
+    then:
+      function: pattern
+      functionOptions:
+        match: "^(/[a-z0-9-{}]+)+$"
+
+  # Require response descriptions
+  operation-tag-defined: warn

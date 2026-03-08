@@ -39,6 +39,13 @@ Thumbs.db
 *.swo
 *~
 
+### Node / npx tools ###
+node_modules/
+gen/
+docs/api.html
+openapi.yaml
+CHANGELOG.md
+
 ### Secrets — NEVER commit ###
 *.env
 .env.*

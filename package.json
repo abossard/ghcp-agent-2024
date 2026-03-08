@@ -1,0 +1,22 @@
+{
+  "name": "agentic-spring-boot-starter-tools",
+  "version": "0.0.1",
+  "private": true,
+  "description": "npx dev tools for the Spring Boot project — no node_modules needed",
+  "scripts": {
+    "api:export": "curl -s http://localhost:8080/v3/api-docs.yaml -o openapi.yaml && echo 'Exported openapi.yaml'",
+    "api:lint": "npx --yes @stoplight/spectral-cli lint openapi.yaml",
+    "api:mock": "npx --yes @stoplight/prism-cli mock openapi.yaml --port 4010",
+    "api:docs": "npx --yes @redocly/cli build-docs openapi.yaml -o docs/api.html",
+    "api:docs:preview": "npx --yes @redocly/cli preview-docs openapi.yaml",
+    "api:redocly:lint": "npx --yes @redocly/cli lint openapi.yaml",
+    "api:generate:client": "npx --yes @openapitools/openapi-generator-cli generate -i openapi.yaml -g java -o gen/client --additional-properties=library=native",
+    "api:generate:typescript": "npx --yes @openapitools/openapi-generator-cli generate -i openapi.yaml -g typescript-fetch -o gen/ts-client",
+    "changelog": "npx --yes auto-changelog --template keepachangelog --output CHANGELOG.md",
+    "kill:8080": "npx --yes kill-port 8080",
+    "kill:4010": "npx --yes kill-port 4010",
+    "diagram:arch": "npx --yes @mermaid-js/mermaid-cli mmdc -i docs/diagrams/architecture.mmd -o docs/diagrams/architecture.svg",
+    "diagram:erd": "npx --yes @mermaid-js/mermaid-cli mmdc -i docs/diagrams/erd.mmd -o docs/diagrams/erd.svg",
+    "pipeline": "npm run api:export && npm run api:lint && npm run api:docs && echo 'Pipeline complete!'"
+  }
+}

@@ -1,0 +1,17 @@
+extends:
+  - recommended
+
+rules:
+  no-unused-components: warn
+  operation-operationId: error
+  tag-description: warn
+
+theme:
+  openapi:
+    theme:
+      colors:
+        primary:
+          main: "#1a73e8"
+      typography:
+        fontSize: "15px"
+        fontFamily: "Inter, system-ui, sans-serif"

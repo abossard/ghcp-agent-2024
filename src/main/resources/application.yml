@@ -38,3 +38,9 @@ logging:
   level:
     root: INFO
     com.example.demo: DEBUG
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
