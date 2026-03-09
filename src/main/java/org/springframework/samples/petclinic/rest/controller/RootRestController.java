@@ -32,13 +32,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @CrossOrigin(exposedHeaders = "errors, content-type")
-@RequestMapping("/")
+@RequestMapping("/api-redirect")
 public class RootRestController {
 
     @Value("#{servletContext.contextPath}")
     private String servletContextPath;
 
-	@RequestMapping(value = "/")
+	@RequestMapping(value = "/swagger")
 	public void redirectToSwagger(HttpServletResponse response) throws IOException {
 		response.sendRedirect(this.servletContextPath + "/swagger-ui/index.html");
 	}

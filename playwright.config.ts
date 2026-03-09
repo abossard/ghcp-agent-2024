@@ -6,7 +6,7 @@ export default defineConfig({
   timeout: 30_000,
   retries: 0,
   use: {
-    baseURL: 'http://localhost:9966/petclinic',
+    baseURL: 'http://localhost:9966',
     screenshot: 'only-on-failure',
     trace: 'on-first-retry',
   },

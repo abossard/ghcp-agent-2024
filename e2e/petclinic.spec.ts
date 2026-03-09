@@ -1,5 +1,88 @@
 import { expect, test } from '@playwright/test';
 
+// === Web UI Tests ===
+
+test.describe('PetClinic Web UI - Home', () => {
+
+  test('Welcome page loads @screenshot', async ({ page }) => {
+    await page.goto('/');
+    await expect(page.locator('h1')).toContainText('Welcome');
+    await expect(page.locator('.nav-brand')).toBeVisible();
+    await page.screenshot({ path: 'e2e/screenshots/welcome.png', fullPage: true });
+  });
+
+  test('Navigation links are present @screenshot', async ({ page }) => {
+    await page.goto('/');
+    await expect(page.locator('.nav-links a')).toHaveCount(5);
+    await expect(page.locator('.nav-links')).toContainText('Find Owners');
+    await expect(page.locator('.nav-links')).toContainText('Veterinarians');
+    await page.screenshot({ path: 'e2e/screenshots/navigation.png', fullPage: true });
+  });
+});
+
+test.describe('PetClinic Web UI - Owners', () => {
+
+  test('Find Owners page loads @screenshot', async ({ page }) => {
+    await page.goto('/owners/find');
+    await expect(page.locator('h2')).toContainText('Find Owners');
+    await expect(page.locator('#lastName')).toBeVisible();
+    await page.screenshot({ path: 'e2e/screenshots/find-owners.png', fullPage: true });
+  });
+
+  test('Search all owners shows list @screenshot', async ({ page }) => {
+    await page.goto('/owners/find');
+    await page.click('button[type="submit"]');
+    await expect(page.locator('.table')).toBeVisible();
+    const rows = page.locator('.table tbody tr');
+    await expect(rows.first()).toBeVisible();
+    await page.screenshot({ path: 'e2e/screenshots/owners-list.png', fullPage: true });
+  });
+
+  test('Owner details page shows pets @screenshot', async ({ page }) => {
+    // Owner 1 (George Franklin) is in seed data
+    await page.goto('/owners/1');
+    await expect(page.locator('h2')).toContainText('Owner Information');
+    await expect(page.locator('.table-detail')).toContainText('George');
+    await page.screenshot({ path: 'e2e/screenshots/owner-details.png', fullPage: true });
+  });
+
+  test('New Owner form renders @screenshot', async ({ page }) => {
+    await page.goto('/owners/new');
+    await expect(page.locator('h2')).toContainText('New Owner');
+    await expect(page.locator('#firstName')).toBeVisible();
+    await expect(page.locator('#lastName')).toBeVisible();
+    await expect(page.locator('#telephone')).toBeVisible();
+    await page.screenshot({ path: 'e2e/screenshots/new-owner-form.png', fullPage: true });
+  });
+
+  test('Create owner via web form', async ({ page }) => {
+    await page.goto('/owners/new');
+    await page.fill('#firstName', 'E2E');
+    await page.fill('#lastName', 'TestOwner');
+    await page.fill('#address', '456 Test Ave');
+    await page.fill('#city', 'TestVille');
+    await page.fill('#telephone', '9876543210');
+    await page.click('button[type="submit"]');
+    // Should redirect to owner details
+    await expect(page.locator('h2')).toContainText('Owner Information');
+    await expect(page.locator('.table-detail')).toContainText('E2E');
+  });
+});
+
+test.describe('PetClinic Web UI - Vets', () => {
+
+  test('Vet list page loads @screenshot', async ({ page }) => {
+    await page.goto('/vets');
+    await expect(page.locator('h2')).toContainText('Veterinarians');
+    await expect(page.locator('.table')).toBeVisible();
+    const rows = page.locator('.table tbody tr');
+    await expect(rows.first()).toBeVisible();
+    await page.screenshot({ path: 'e2e/screenshots/vets-list.png', fullPage: true });
+  });
+});
+
+// === Swagger UI Tests ===
+
 test.describe('PetClinic Swagger UI', () => {
 
   test('Swagger UI loads successfully @screenshot', async ({ page }) => {

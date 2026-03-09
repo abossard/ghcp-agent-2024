@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head('Veterinarians')}"><title>Vets</title></head>
+<body>
+  <nav th:replace="~{layout :: nav}"></nav>
+
+  <main class="container">
+    <h2>Veterinarians</h2>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Specialties</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="vet : ${vets}">
+          <td th:text="${vet.firstName + ' ' + vet.lastName}">James Carter</td>
+          <td>
+            <span th:if="${vet.nrOfSpecialties == 0}">none</span>
+            <span th:each="specialty,iterStat : ${vet.specialties}"
+                  th:text="${specialty.name + (iterStat.last ? '' : ', ')}"></span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </main>
+
+  <footer th:replace="~{layout :: footer}"></footer>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head('Owner Details')}"><title>Owner</title></head>
+<body>
+  <nav th:replace="~{layout :: nav}"></nav>
+
+  <main class="container">
+    <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
+
+    <h2>Owner Information</h2>
+    <table class="table table-detail">
+      <tr><th>Name</th><td th:text="${owner.firstName + ' ' + owner.lastName}"></td></tr>
+      <tr><th>Address</th><td th:text="${owner.address}"></td></tr>
+      <tr><th>City</th><td th:text="${owner.city}"></td></tr>
+      <tr><th>Telephone</th><td th:text="${owner.telephone}"></td></tr>
+    </table>
+    <div class="actions">
+      <a th:href="@{/owners/{id}/edit(id=${owner.id})}" class="btn btn-primary">Edit Owner</a>
+      <a th:href="@{/owners/{id}/pets/new(id=${owner.id})}" class="btn btn-success">Add New Pet</a>
+    </div>
+
+    <h3>Pets and Visits</h3>
+    <div th:each="pet : ${owner.pets}" class="card">
+      <div class="card-header">
+        <strong th:text="${pet.name}">Basil</strong>
+        <a th:href="@{/owners/{ownerId}/pets/{petId}/edit(ownerId=${owner.id},petId=${pet.id})}" class="btn btn-sm">Edit Pet</a>
+        <a th:href="@{/owners/{ownerId}/pets/{petId}/visits/new(ownerId=${owner.id},petId=${pet.id})}" class="btn btn-sm btn-success">Add Visit</a>
+      </div>
+      <div class="card-body">
+        <table class="table table-sm">
+          <tr><th>Birth Date</th><td th:text="${pet.birthDate}"></td></tr>
+          <tr><th>Type</th><td th:text="${pet.type}"></td></tr>
+        </table>
+        <table th:if="${not #lists.isEmpty(pet.visits)}" class="table table-sm">
+          <thead><tr><th>Visit Date</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr th:each="visit : ${pet.visits}">
+              <td th:text="${visit.date}"></td>
+              <td th:text="${visit.description}"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <footer th:replace="~{layout :: footer}"></footer>
+</body>
+</html>

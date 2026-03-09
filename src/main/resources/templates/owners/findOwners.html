@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head('Find Owners')}"><title>Find Owners</title></head>
+<body>
+  <nav th:replace="~{layout :: nav}"></nav>
+
+  <main class="container">
+    <h2>Find Owners</h2>
+    <form th:action="@{/owners}" th:object="${owner}" method="get" class="form-inline">
+      <div class="form-group">
+        <label for="lastName">Last name</label>
+        <input type="text" th:field="*{lastName}" id="lastName" class="form-control" placeholder="Enter last name"/>
+        <span th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}" class="error"></span>
+      </div>
+      <button type="submit" class="btn btn-primary">Find Owner</button>
+    </form>
+    <br/>
+    <a th:href="@{/owners/new}" class="btn btn-success">Add Owner</a>
+  </main>
+
+  <footer th:replace="~{layout :: footer}"></footer>
+</body>
+</html>

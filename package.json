@@ -4,7 +4,7 @@
   "private": true,
   "description": "npx dev tools for the Spring Boot project — no node_modules needed",
   "scripts": {
-    "api:export": "curl -s http://localhost:9966/petclinic/v3/api-docs.yaml -o openapi.yaml && echo 'Exported openapi.yaml'",
+    "api:export": "curl -s http://localhost:9966/v3/api-docs.yaml -o openapi.yaml && echo 'Exported openapi.yaml'",
     "api:lint": "npx --yes @stoplight/spectral-cli lint openapi.yaml",
     "api:mock": "npx --yes @stoplight/prism-cli mock openapi.yaml --port 4010",
     "api:docs": "npx --yes @redocly/cli build-docs openapi.yaml -o docs/api.html",

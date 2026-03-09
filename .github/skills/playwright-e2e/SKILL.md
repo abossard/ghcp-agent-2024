@@ -16,7 +16,7 @@ Captures screenshots, validates Swagger UI, and smoke-tests REST endpoints.
 ## Prerequisites
 
 - Node.js 18+ (for `npx`)
-- Running Spring Boot app (port 9966, context `/petclinic/`)
+- Running Spring Boot app (port 9966)
 
 ## Quick Start
 
@@ -125,7 +125,7 @@ test("GET /api/your-endpoint returns 200", async ({ request }) => {
 
 ### Configuration
 
-- **Base URL**: `http://localhost:9966/petclinic` (set in `playwright.config.ts`)
+- **Base URL**: `http://localhost:9966` (set in `playwright.config.ts`)
 - **Browser**: Chromium only (lightweight, CI-friendly)
 - **Timeout**: 30 seconds per test
 - **Screenshots**: Captured on failure automatically; manual via `page.screenshot()`

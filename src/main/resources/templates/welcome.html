@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head('Welcome')}"><title>Welcome</title></head>
+<body>
+  <nav th:replace="~{layout :: nav}"></nav>
+
+  <main class="container">
+    <h1>Welcome to PetClinic</h1>
+    <div class="hero">
+      <p>A Spring Boot demo application for managing a veterinary clinic.</p>
+      <div class="hero-actions">
+        <a th:href="@{/owners/find}" class="btn btn-primary">Find Owners</a>
+        <a th:href="@{/vets}" class="btn btn-secondary">View Veterinarians</a>
+        <a th:href="@{/swagger-ui/index.html}" class="btn btn-outline">API Documentation</a>
+      </div>
+    </div>
+  </main>
+
+  <footer th:replace="~{layout :: footer}"></footer>
+</body>
+</html>

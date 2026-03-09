@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head('Owners')}"><title>Owners</title></head>
+<body>
+  <nav th:replace="~{layout :: nav}"></nav>
+
+  <main class="container">
+    <h2>Owners</h2>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Address</th>
+          <th>City</th>
+          <th>Telephone</th>
+          <th>Pets</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="owner : ${owners}">
+          <td>
+            <a th:href="@{/owners/{id}(id=${owner.id})}" th:text="${owner.firstName + ' ' + owner.lastName}">George Franklin</a>
+          </td>
+          <td th:text="${owner.address}">110 W. Liberty St.</td>
+          <td th:text="${owner.city}">Madison</td>
+          <td th:text="${owner.telephone}">6085551023</td>
+          <td>
+            <span th:each="pet,iterStat : ${owner.pets}" th:text="${pet.name + (iterStat.last ? '' : ', ')}">Rosy</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </main>
+
+  <footer th:replace="~{layout :: footer}"></footer>
+</body>
+</html>

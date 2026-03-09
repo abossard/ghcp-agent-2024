@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head(title)">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title th:text="${title} + ' | PetClinic'">PetClinic</title>
+  <link rel="stylesheet" th:href="@{/css/petclinic.css}"/>
+</head>
+<body>
+
+  <nav th:fragment="nav" class="navbar">
+    <div class="container nav-container">
+      <a th:href="@{/}" class="nav-brand">&#x1F43E; PetClinic</a>
+      <div class="nav-links">
+        <a th:href="@{/}">Home</a>
+        <a th:href="@{/owners/find}">Find Owners</a>
+        <a th:href="@{/vets}">Veterinarians</a>
+        <a th:href="@{/oops}">Error</a>
+        <a th:href="@{/swagger-ui/index.html}">API Docs</a>
+      </div>
+    </div>
+  </nav>
+
+  <footer th:fragment="footer" class="footer">
+    <div class="container">
+      <span>Spring PetClinic &mdash; FSI Edition</span>
+    </div>
+  </footer>
+
+</body>
+</html>

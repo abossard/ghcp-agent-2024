@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head('Pet')}"><title>Pet</title></head>
+<body>
+  <nav th:replace="~{layout :: nav}"></nav>
+
+  <main class="container">
+    <h2 th:text="${pet.isNew() ? 'New Pet' : 'Edit Pet'}">Pet</h2>
+    <h3>Owner: <span th:text="${owner.firstName + ' ' + owner.lastName}"></span></h3>
+    <form th:action="${pet.isNew()
+        ? '/owners/' + owner.id + '/pets/new'
+        : '/owners/' + owner.id + '/pets/' + pet.id + '/edit'}"
+          th:object="${pet}" method="post" class="form">
+      <div class="form-group">
+        <label for="name">Name</label>
+        <input type="text" th:field="*{name}" id="name" class="form-control"/>
+        <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="error"></span>
+      </div>
+      <div class="form-group">
+        <label for="birthDate">Birth Date</label>
+        <input type="date" th:field="*{birthDate}" id="birthDate" class="form-control"/>
+        <span th:if="${#fields.hasErrors('birthDate')}" th:errors="*{birthDate}" class="error"></span>
+      </div>
+      <div class="form-group">
+        <label for="type">Type</label>
+        <select th:field="*{type}" id="type" class="form-control">
+          <option th:each="t : ${types}" th:value="${t}" th:text="${t.name}"></option>
+        </select>
+      </div>
+      <button type="submit" class="btn btn-primary" th:text="${pet.isNew() ? 'Add Pet' : 'Update Pet'}">Submit</button>
+    </form>
+  </main>
+
+  <footer th:replace="~{layout :: footer}"></footer>
+</body>
+</html>
