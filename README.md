@@ -503,6 +503,114 @@ graph TB
     style QG fill:#e74c3c,color:#fff
 ```
 
+## 📋 Prompts Reference
+
+Prompt files (`.prompt.md`) are reusable task templates. Invoke them in Copilot Chat via `/` command or Command Palette → "Chat: Run Prompt File".
+
+| Prompt | Description | Invocation |
+|--------|-------------|------------|
+| **add-entity** | Scaffold a JPA entity + repository + validation | `/add-entity` → describe entity |
+| **implement-feature** | Full pipeline: entity → DTO → mapper → service → controller → tests | `/implement-feature` → describe feature |
+| **write-tests** | Comprehensive JUnit 5 tests for an existing class | `/write-tests` → specify class |
+| **refactor-service** | Improve a service class for design, testability, maintainability | `/refactor-service` → specify service |
+| **security-review** | OWASP + FSI security audit with severity-rated findings | `/security-review` → scans full codebase |
+| **explain-codebase** | Generate full architecture overview as Markdown | `/explain-codebase` |
+| **generate-architecture-diagram** | Scan code → Mermaid → SVG architecture diagram | `/generate-architecture-diagram` (uses A24 Diagrammer agent) |
+| **generate-erd** | Scan `@Entity` classes → Mermaid → SVG ERD | `/generate-erd` (uses A24 Diagrammer agent) |
+
+**Tip**: Chain prompts — `/implement-feature` → `/write-tests` → `/security-review` for a complete workflow.
+
+## 🛠️ Skills Reference
+
+Skills are domain knowledge files that agents load automatically when relevant. Located in `.github/skills/`.
+
+| Skill | Triggers | What It Provides |
+|-------|----------|-----------------|
+| **api-development** | REST endpoints, API design, validation, error handling | HTTP status codes, request/response patterns, OpenAPI conventions |
+| **database-migration** | Schema changes, entity design, H2 console, migrations | JPA/Hibernate config, schema evolution strategies, dev vs prod |
+| **diagramming** | Architecture diagrams, ERD, visual docs | Mermaid patterns, `npx` rendering commands, diagram templates |
+| **maven-build** | Build errors, dependency issues, packaging | `./mvnw` commands, troubleshooting, dependency tree analysis |
+| **spring-testing** | Writing tests, test failures, MockMvc, Mockito | JUnit 5 patterns, test slices, TDD workflow |
+| **playwright-e2e** | Browser tests, API smoke tests, screenshots | Playwright config, test patterns, CI integration |
+
+## 🔄 Ralph Loop — Autonomous Development Cycle
+
+The Ralph Loop is an autonomous coding pattern (inspired by [giocaizzi/ralph-copilot](https://github.com/giocaizzi/ralph-copilot) and [Geoffrey Huntley's Ralph Wiggum pattern](https://ghuntley.com/ralph/)) where agents plan, execute, review, and commit tasks one at a time with fresh context each iteration.
+
+### How It Works
+
+```mermaid
+flowchart TB
+    A[👤 User describes feature] --> B[RalphPlanner]
+    B --> C[Creates PRD.md + PROGRESS.md]
+    C --> D[👤 User reviews PRD]
+    D --> E[RalphCoordinator]
+    E --> F{Next task?}
+    F -->|Yes| G[RalphExecutor]
+    G --> H[Implements + tests]
+    H --> I[RalphReviewer]
+    I -->|PASS| J[git commit + update PROGRESS.md]
+    I -->|FAIL| G
+    J --> F
+    F -->|All done| K[✅ Feature complete]
+
+    style B fill:#3498db,color:#fff
+    style E fill:#f39c12,color:#fff
+    style G fill:#27ae60,color:#fff
+    style I fill:#e74c3c,color:#fff
+    style K fill:#27ae60,color:#fff
+```
+
+### The Four Ralph Agents
+
+| Agent | Role | Mode |
+|-------|------|------|
+| **RalphPlanner** | Decomposes feature into atomic tasks → `PRD.md` + `PROGRESS.md` | Planning only |
+| **RalphCoordinator** | Orchestrates the loop — dispatches tasks, tracks progress, commits | Orchestration |
+| **RalphExecutor** | Implements exactly ONE task, runs tests, reports back | Read/write |
+| **RalphReviewer** | Reviews changes for quality, tests, security — PASS or FAIL | Read-only |
+
+### Quick Start
+
+1. **Plan** — Select `RalphPlanner` in Copilot Chat:
+   ```
+   Create a PRD for: Add an Appointment entity with date, vet, pet, 
+   notes fields. Include CRUD API and web UI page.
+   ```
+2. **Review** — Edit `PRD.md` as needed
+3. **Execute** — Select `RalphCoordinator`:
+   ```
+   Start the Ralph Loop
+   ```
+4. **Watch** — The coordinator will cycle through tasks automatically:
+   - Pick task → Execute → Review → Commit → Next task
+   - Track progress in `PROGRESS.md` and `git log`
+
+### Why Ralph Loop?
+
+- **Fresh context** every iteration — avoids context pollution
+- **Atomic commits** — one task = one commit, easy to revert
+- **Built-in review** — every change gets reviewed before moving on
+- **Filesystem as memory** — `PRD.md` and `PROGRESS.md` persist across context resets
+- **Language agnostic** — works with any stack (adapted here for Spring Boot)
+
+## 🤖 Agents Reference
+
+| Agent | Purpose | Mode |
+|-------|---------|------|
+| **A24 Spring Boot Developer** | Builds REST APIs, services, data access layers | Read/write |
+| **A24 Test Engineer** | JUnit 5, Mockito, Spring Boot testing | Read/write |
+| **A24 API Designer** | REST API design, HTTP semantics, OpenAPI | Advisory |
+| **A24 Security Reviewer** | OWASP/FSI security review | Read-only |
+| **A24 Code Review** | Quality, security, best practices review | Read-only |
+| **A24 Diagrammer** | Mermaid architecture + ERD diagrams | Read/write |
+| **A24 Execution Lead** | Orchestrates full feature pipeline via sub-agents | Orchestration |
+| **A24 Full Auto** | Maximum autonomy — implements features end-to-end | Read/write |
+| **RalphPlanner** | Creates PRD with atomic tasks | Planning |
+| **RalphCoordinator** | Drives the Ralph Loop | Orchestration |
+| **RalphExecutor** | Implements one task at a time | Read/write |
+| **RalphReviewer** | Reviews changes — PASS/FAIL | Read-only |
+
 ## 🤝 Contributing
 
 This is a starter template. Customize it for your team:
