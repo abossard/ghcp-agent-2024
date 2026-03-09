@@ -4,7 +4,7 @@
   "private": true,
   "description": "npx dev tools for the Spring Boot project — no node_modules needed",
   "scripts": {
-    "api:export": "curl -s http://localhost:8080/v3/api-docs.yaml -o openapi.yaml && echo 'Exported openapi.yaml'",
+    "api:export": "curl -s http://localhost:9966/petclinic/v3/api-docs.yaml -o openapi.yaml && echo 'Exported openapi.yaml'",
     "api:lint": "npx --yes @stoplight/spectral-cli lint openapi.yaml",
     "api:mock": "npx --yes @stoplight/prism-cli mock openapi.yaml --port 4010",
     "api:docs": "npx --yes @redocly/cli build-docs openapi.yaml -o docs/api.html",
@@ -13,10 +13,18 @@
     "api:generate:client": "npx --yes @openapitools/openapi-generator-cli generate -i openapi.yaml -g java -o gen/client --additional-properties=library=native",
     "api:generate:typescript": "npx --yes @openapitools/openapi-generator-cli generate -i openapi.yaml -g typescript-fetch -o gen/ts-client",
     "changelog": "npx --yes auto-changelog --template keepachangelog --output CHANGELOG.md",
-    "kill:8080": "npx --yes kill-port 8080",
+    "kill:9966": "npx --yes kill-port 9966",
     "kill:4010": "npx --yes kill-port 4010",
     "diagram:arch": "npx --yes @mermaid-js/mermaid-cli mmdc -i docs/diagrams/architecture.mmd -o docs/diagrams/architecture.svg",
     "diagram:erd": "npx --yes @mermaid-js/mermaid-cli mmdc -i docs/diagrams/erd.mmd -o docs/diagrams/erd.svg",
-    "pipeline": "npm run api:export && npm run api:lint && npm run api:docs && echo 'Pipeline complete!'"
+    "pipeline": "npm run api:export && npm run api:lint && npm run api:docs && echo 'Pipeline complete!'",
+    "playwright:install": "npx --yes playwright install chromium",
+    "playwright:test": "npx --yes playwright test",
+    "playwright:test:ui": "npx --yes playwright test --ui",
+    "playwright:screenshots": "npx --yes playwright test --grep @screenshot",
+    "playwright:report": "npx --yes playwright show-report"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.51.0"
   }
 }
