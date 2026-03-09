@@ -218,13 +218,13 @@ cd agentic-spring-boot-starter
 # Run the application
 ./mvnw spring-boot:run
 
-# Test the API (port 9966, context path /petclinic/)
-curl http://localhost:9966/petclinic/api/owners
-curl http://localhost:9966/petclinic/api/pets
-curl http://localhost:9966/petclinic/api/vets
-curl http://localhost:9966/petclinic/api/visits
-curl http://localhost:9966/petclinic/api/pettypes
-curl http://localhost:9966/petclinic/api/specialties
+# Test the API (port 9966, context path /api/)
+curl http://localhost:9966/api/owners
+curl http://localhost:9966/api/pets
+curl http://localhost:9966/api/vets
+curl http://localhost:9966/api/visits
+curl http://localhost:9966/api/pettypes
+curl http://localhost:9966/api/specialties
 ```
 
 ### Using Copilot Agent Mode
