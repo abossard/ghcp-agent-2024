@@ -1,28 +1,79 @@
 graph LR
   subgraph Clients
-    user["👤 Clients"]
+    user["Clients"]
   end
 
-  subgraph app["Spring Boot Application"]
-    subgraph controllers["Controllers"]
-      gc["GreetingController"]
-      hc["HealthController"]
+  subgraph app["Spring Boot PetClinic REST Application"]
+    subgraph security["Security"]
+      bf["BasicAuthenticationFilter"]
     end
+
+    subgraph controllers["REST Controllers"]
+      oc["OwnerRestController"]
+      pc["PetRestController"]
+      ptc["PetTypeRestController"]
+      vc["VetRestController"]
+      vic["VisitRestController"]
+      sc["SpecialtyRestController"]
+      uc["UserRestController"]
+    end
+
+    subgraph mappers["MapStruct Mappers"]
+      om["OwnerMapper"]
+      pm["PetMapper"]
+      ptm["PetTypeMapper"]
+      vm["VetMapper"]
+      vim["VisitMapper"]
+      sm["SpecialtyMapper"]
+      um["UserMapper"]
+    end
+
     subgraph services["Services"]
-      gs["GreetingService"]
+      cs["ClinicService"]
+      us["UserService"]
     end
+
     subgraph repositories["Repositories"]
-      gr["GreetingRepository"]
+      subgraph jdbc["JDBC Implementation"]
+        jdbc_r["JdbcOwnerRepository<br/>JdbcPetRepository<br/>JdbcVetRepository<br/>JdbcVisitRepository<br/>JdbcSpecialtyRepository<br/>JdbcPetTypeRepository"]
+      end
+      subgraph jpa["JPA Implementation"]
+        jpa_r["JpaOwnerRepository<br/>JpaPetRepository<br/>JpaVetRepository<br/>JpaVisitRepository<br/>JpaSpecialtyRepository<br/>JpaPetTypeRepository"]
+      end
+      subgraph springdata["Spring Data JPA"]
+        sd_r["SpringOwnerRepository<br/>SpringPetRepository<br/>SpringVetRepository<br/>SpringVisitRepository<br/>SpringSpecialtyRepository<br/>SpringPetTypeRepository"]
+      end
     end
-    subgraph config["Config"]
-      eh["GlobalExceptionHandler"]
-    end
-    gc --> gs
-    gs --> gr
   end
 
-  db[("H2 Database")]
+  db[("HSQLDB / MySQL / PostgreSQL")]
 
-  user -->|"HTTP REST"| gc
-  user -->|"GET /health"| hc
-  gr -->|"JPA / Spring Data"| db
+  user -->|"HTTP REST"| security
+  security --> controllers
+
+  oc --> om
+  pc --> pm
+  ptc --> ptm
+  vc --> vm
+  vic --> vim
+  sc --> sm
+  uc --> um
+
+  om --> cs
+  pm --> cs
+  ptm --> cs
+  vm --> cs
+  vim --> cs
+  sm --> cs
+  um --> us
+
+  cs --> jdbc
+  cs --> jpa
+  cs --> springdata
+  us --> jdbc
+  us --> jpa
+  us --> springdata
+
+  jdbc -->|"JDBC"| db
+  jpa -->|"JPA / Hibernate"| db
+  springdata -->|"Spring Data JPA"| db

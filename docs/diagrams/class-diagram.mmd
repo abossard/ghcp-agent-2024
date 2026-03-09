@@ -1,30 +1,142 @@
 classDiagram
-    class GreetingController {
-        -GreetingService greetingService
-        +getAllGreetings() List~GreetingResponse~
-        +getGreetingById(Long id) ResponseEntity~GreetingResponse~
-        +createGreeting(CreateGreetingRequest request) GreetingResponse
+    class BaseEntity {
+        -Integer id
+        +getId() Integer
+        +setId(Integer) void
+        +isNew() boolean
     }
-    class GreetingService {
-        -GreetingRepository repository
-        +findAll() List~Greeting~
-        +findById(Long id) Optional~Greeting~
-        +create(CreateGreetingRequest request) Greeting
+    class NamedEntity {
+        -String name
+        +getName() String
+        +setName(String) void
     }
-    class GreetingRepository {
-        +findById(Long id) Optional~Greeting~
-        +save(Greeting entity) Greeting
-        +findAll() List~Greeting~
+    class Person {
+        -String firstName
+        -String lastName
+        +getFirstName() String
+        +setFirstName(String) void
+        +getLastName() String
+        +setLastName(String) void
     }
-    class Greeting {
-        -Long id
-        -String message
-        -String language
-        +getId() Long
-        +getMessage() String
-        +getLanguage() String
+    class Owner {
+        -String address
+        -String city
+        -String telephone
+        -Set~Pet~ pets
+        +addPet(Pet) void
+        +getPet(String) Pet
     }
-    GreetingController --> GreetingService : uses
-    GreetingService --> GreetingRepository : uses
-    GreetingService --> Greeting : creates
-    GreetingRepository --> Greeting : manages
+    class Pet {
+        -LocalDate birthDate
+        -PetType type
+        -Owner owner
+        -Set~Visit~ visits
+        +addVisit(Visit) void
+    }
+    class PetType {
+    }
+    class Visit {
+        -LocalDate date
+        -String description
+        -Pet pet
+    }
+    class Vet {
+        -Set~Specialty~ specialties
+        +getNrOfSpecialties() int
+    }
+    class Specialty {
+    }
+    class User {
+        -String username
+        -String password
+        -Boolean enabled
+        -Set~Role~ roles
+        +addRole(String) void
+    }
+    class Role {
+        -String name
+    }
+
+    BaseEntity <|-- NamedEntity
+    BaseEntity <|-- Person
+    Person <|-- Owner
+    Person <|-- Vet
+    NamedEntity <|-- PetType
+    NamedEntity <|-- Pet
+    NamedEntity <|-- Specialty
+    BaseEntity <|-- Visit
+
+    Owner "1" --> "*" Pet : pets
+    Pet "*" --> "1" PetType : type
+    Pet "1" --> "*" Visit : visits
+    Vet "*" --> "*" Specialty : specialties
+    User "1" --> "*" Role : roles
+
+    class OwnerRestController {
+        -ClinicService clinicService
+        -OwnerMapper ownerMapper
+        +listOwners() List~OwnerDto~
+        +getOwner(int) OwnerDto
+        +addOwner(OwnerDto) OwnerDto
+        +updateOwner(int, OwnerDto) OwnerDto
+        +deleteOwner(int) void
+    }
+    class PetRestController {
+        -ClinicService clinicService
+        -PetMapper petMapper
+        +getPet(int) PetDto
+        +addPet(PetDto) PetDto
+        +updatePet(int, PetDto) PetDto
+        +deletePet(int) void
+    }
+    class VetRestController {
+        -ClinicService clinicService
+        -VetMapper vetMapper
+        +listVets() List~VetDto~
+        +getVet(int) VetDto
+        +addVet(VetDto) VetDto
+        +updateVet(int, VetDto) VetDto
+        +deleteVet(int) void
+    }
+    class VisitRestController {
+        -ClinicService clinicService
+        -VisitMapper visitMapper
+        +listVisits() List~VisitDto~
+        +getVisit(int) VisitDto
+        +addVisit(VisitDto) VisitDto
+        +updateVisit(int, VisitDto) VisitDto
+        +deleteVisit(int) void
+    }
+
+    class ClinicService {
+        +findAllOwners() Collection~Owner~
+        +findOwnerById(int) Owner
+        +saveOwner(Owner) void
+        +deleteOwner(Owner) void
+        +findAllPets() Collection~Pet~
+        +findPetById(int) Pet
+        +savePet(Pet) void
+        +deletePet(Pet) void
+        +findAllVets() Collection~Vet~
+        +findVetById(int) Vet
+        +saveVet(Vet) void
+        +deleteVet(Vet) void
+        +findAllVisits() Collection~Visit~
+        +findVisitById(int) Visit
+        +saveVisit(Visit) void
+        +deleteVisit(Visit) void
+        +findAllPetTypes() Collection~PetType~
+        +findAllSpecialties() Collection~Specialty~
+    }
+
+    class OwnerMapper {
+        +toOwnerDto(Owner) OwnerDto
+        +toOwner(OwnerDto) Owner
+        +toOwnerDtoCollection(Collection~Owner~) Collection~OwnerDto~
+    }
+
+    OwnerRestController --> OwnerMapper : uses
+    OwnerRestController --> ClinicService : uses
+    PetRestController --> ClinicService : uses
+    VetRestController --> ClinicService : uses
+    VisitRestController --> ClinicService : uses

@@ -1,6 +1,6 @@
 # Project-Wide Copilot Instructions
 
-You are working on a Spring Boot 3.4.x application using Java 21 in a restricted FSI (Financial Services Industry) environment.
+You are working on the **spring-petclinic-rest** application — a Spring Boot 3.4.x REST API using Java 21, based on `org.springframework.samples.petclinic`.
 
 ## Critical Constraints
 - **NO MCP**: Never suggest or configure MCP servers. They are blocked by organizational policy.
@@ -14,7 +14,14 @@ You are working on a Spring Boot 3.4.x application using Java 21 in a restricted
 - Use `var` for local variables when type is obvious from the right-hand side
 - Use SLF4J for logging (`private static final Logger log = LoggerFactory.getLogger(ClassName.class)`)
 - Annotate `@Valid` on request bodies; use Bean Validation annotations on fields
-- All entity classes go in `model/`, all REST controllers in `controller/`, all business logic in `service/`
+- Package: `org.springframework.samples.petclinic`
+- Entity classes in `model/` (extend BaseEntity, NamedEntity, or Person)
+- REST controllers in `rest/controller/` (NOT `controller/`)
+- Business logic in `ClinicService` interface + `ClinicServiceImpl` (NOT per-entity services)
+- **OpenAPI-first**: DTOs are generated from `src/main/resources/openapi.yml` — never write DTOs manually
+- **MapStruct mappers** in `mapper/` for entity ↔ DTO conversion
+- Configuration uses `application.properties` (not .yml), port 9966, context path `/petclinic/`
+- Spring Security is included but disabled by default
 
 ## Testing Requirements
 - Write tests for every new class

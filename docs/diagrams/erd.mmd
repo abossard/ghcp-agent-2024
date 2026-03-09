@@ -1,6 +1,79 @@
 erDiagram
-    GREETING {
-        BIGINT id PK "auto-generated"
-        VARCHAR message "not null, max 255"
-        VARCHAR language
+    BASE_ENTITY {
+        INTEGER id PK "auto-generated"
     }
+
+    NAMED_ENTITY {
+        INTEGER id PK "extends BaseEntity"
+        VARCHAR name "not null"
+    }
+
+    PERSON {
+        INTEGER id PK "extends BaseEntity"
+        VARCHAR first_name "not null"
+        VARCHAR last_name "not null"
+    }
+
+    OWNER {
+        INTEGER id PK "extends Person"
+        VARCHAR first_name "not null"
+        VARCHAR last_name "not null"
+        VARCHAR address "max 255"
+        VARCHAR city "max 80"
+        VARCHAR telephone "10 digits"
+    }
+
+    VET {
+        INTEGER id PK "extends Person"
+        VARCHAR first_name "not null"
+        VARCHAR last_name "not null"
+    }
+
+    PET {
+        INTEGER id PK "extends NamedEntity"
+        VARCHAR name "not null"
+        DATE birth_date "not null"
+        INTEGER type_id FK "not null"
+        INTEGER owner_id FK "not null"
+    }
+
+    PET_TYPE {
+        INTEGER id PK "extends NamedEntity"
+        VARCHAR name "not null"
+    }
+
+    SPECIALTY {
+        INTEGER id PK "extends NamedEntity"
+        VARCHAR name "not null"
+    }
+
+    VISIT {
+        INTEGER id PK "extends BaseEntity"
+        DATE date "not null"
+        VARCHAR description "max 255"
+        INTEGER pet_id FK "not null"
+    }
+
+    USERS {
+        VARCHAR username PK "not null"
+        VARCHAR password "not null"
+        BOOLEAN enabled "not null"
+    }
+
+    ROLES {
+        INTEGER id PK "auto-generated"
+        VARCHAR name "not null"
+        VARCHAR username FK "not null"
+    }
+
+    VET_SPECIALTIES {
+        INTEGER vet_id FK
+        INTEGER specialty_id FK
+    }
+
+    OWNER ||--o{ PET : "has"
+    PET_TYPE ||--o{ PET : "categorizes"
+    PET ||--o{ VISIT : "has"
+    VET ||--o{ VET_SPECIALTIES : "has"
+    SPECIALTY ||--o{ VET_SPECIALTIES : "referenced by"
+    USERS ||--o{ ROLES : "has"

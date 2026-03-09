@@ -84,7 +84,7 @@ Delegate to **@A24 API Designer**:
 
 ```
 Design a REST API for the {EntityName} feature with these fields: {fields}.
-Endpoints: {CRUD + custom}. Follow project conventions (see GreetingController).
+Endpoints: {CRUD + custom}. Follow project conventions (see OwnerRestController in org.springframework.samples.petclinic.rest.controller).
 ```
 
 ### Step 3: Implement
@@ -94,7 +94,8 @@ Delegate to **@A24 Spring Boot Developer**:
 ```
 Implement the {EntityName} feature following the feature-pipeline instruction.
 Entity fields: {fields}. Relationships: {relationships}. Validation: {rules}.
-Reference: Greeting implementation. Run ./mvnw test when done.
+Reference: Owner/OwnerRestController (complex) or PetType/PetTypeRestController (simple) in org.springframework.samples.petclinic.
+Build order: Entity → Repository → MapStruct Mapper → openapi.yml DTOs → ClinicService → RestController. Run ./mvnw test when done.
 ```
 
 ### Step 4: Test
@@ -163,16 +164,16 @@ Findings: {critical} critical, {warnings} warnings, {info} info
 ```text
 ✅ FEATURE PIPELINE COMPLETE: {EntityName}
 
-Files Created:
+Files Created/Modified:
 - model/{EntityName}.java
 - repository/{EntityName}Repository.java
-- controller/dto/Create{EntityName}Request.java
-- controller/dto/{EntityName}Response.java
-- service/{EntityName}Service.java
-- controller/{EntityName}Controller.java
-- Tests: service/{EntityName}ServiceTest.java, controller/{EntityName}ControllerTest.java
+- mapper/{EntityName}Mapper.java (MapStruct)
+- openapi.yml (DTO schemas added)
+- ClinicService / ClinicServiceImpl (new methods)
+- rest/controller/{EntityName}RestController.java
+- Tests: service/{EntityName}ServiceTest.java, rest/controller/{EntityName}RestControllerTest.java
 
-Endpoints:
+Endpoints (base: /petclinic/api):
 - GET    /api/{entities}
 - GET    /api/{entities}/{id}
 - POST   /api/{entities}

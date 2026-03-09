@@ -1,98 +1,103 @@
 ---
-applyTo:
-  - "src/main/java/**/controller/**"
-  - "src/main/java/**/controller/dto/**"
+applyTo: "src/main/java/**/rest/**"
 ---
 
 # DTO & Controller Pattern Instructions
 
-## ALWAYS Use DTOs — Never Expose Entities in API
+## OpenAPI-First: DTOs Are Generated — Never Write DTOs Manually
 
-### Request DTO (record)
-```java
-package com.example.demo.controller.dto;
+This project uses an **OpenAPI-first** approach. DTOs are auto-generated from `src/main/resources/openapi.yml` during the build. Do NOT create DTO classes by hand.
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
+### The Pattern
 
-public record Create{Name}Request(
-        @NotBlank(message = "{field} is required")
-        @Size(max = 255, message = "{field} must be at most 255 characters")
-        String fieldName
-) {
-    // Add helper methods for defaults if needed
-}
+1. **Define the schema** in `src/main/resources/openapi.yml` under `components/schemas`
+2. **Run the build** (`./mvnw generate-sources`) to generate DTO classes
+3. **Create a MapStruct mapper** for entity ↔ DTO conversion
+4. **Use the mapper** in the REST controller
+
+### Adding a New DTO
+
+Add the schema to `openapi.yml`:
+```yaml
+components:
+  schemas:
+    {Name}Dto:
+      type: object
+      required:
+        - fieldName
+      properties:
+        id:
+          type: integer
+          format: int32
+          readOnly: true
+        fieldName:
+          type: string
+          maxLength: 255
+    {Name}FieldsDto:
+      type: object
+      required:
+        - fieldName
+      properties:
+        fieldName:
+          type: string
+          maxLength: 255
 ```
 
-### Response DTO (record with factory)
+### MapStruct Mapper
 ```java
-package com.example.demo.controller.dto;
+package org.springframework.samples.petclinic.mapper;
 
-import com.example.demo.model.{Name};
-import java.util.List;
+import org.mapstruct.Mapper;
+import org.springframework.samples.petclinic.model.{Name};
+import org.springframework.samples.petclinic.rest.dto.{Name}Dto;
 
-public record {Name}Response(
-        Long id,
-        String fieldName
-) {
-    public static {Name}Response from({Name} entity) {
-        return new {Name}Response(entity.getId(), entity.getFieldName());
-    }
-
-    public static List<{Name}Response> fromList(List<{Name}> entities) {
-        return entities.stream().map({Name}Response::from).toList();
-    }
+@Mapper(componentModel = "spring")
+public interface {Name}Mapper {
+    {Name}Dto toDto({Name} entity);
+    {Name} toEntity({Name}Dto dto);
+    Collection<{Name}Dto> toDtos(Collection<{Name}> entities);
 }
 ```
 
 ### Controller Pattern
 ```java
 @RestController
+@CrossOrigin(exposedHeaders = "errors, content-type")
 @RequestMapping("/api/{resources}")
-public class {Name}Controller {
-    private final {Name}Service service;
+public class {Name}RestController {
+    private final ClinicService clinicService;
+    private final {Name}Mapper {name}Mapper;
 
-    public {Name}Controller({Name}Service service) {
-        this.service = service;
+    public {Name}RestController(ClinicService clinicService, {Name}Mapper {name}Mapper) {
+        this.clinicService = clinicService;
+        this.{name}Mapper = {name}Mapper;
     }
 
     @GetMapping
-    public List<{Name}Response> getAll() {
-        return {Name}Response.fromList(service.findAll());
+    public ResponseEntity<List<{Name}Dto>> getAll() {
+        List<{Name}Dto> dtos = new ArrayList<>({name}Mapper.toDtos(clinicService.findAll{Name}s()));
+        return new ResponseEntity<>(dtos, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<{Name}Response> getById(@PathVariable Long id) {
-        return service.findById(id)
-                .map({Name}Response::from)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<{Name}Dto> getById(@PathVariable int id) {
+        {Name} entity = clinicService.find{Name}ById(id);
+        return new ResponseEntity<>({name}Mapper.toDto(entity), HttpStatus.OK);
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public {Name}Response create(@Valid @RequestBody Create{Name}Request request) {
-        var entity = new {Name}(request.fieldName());
-        return {Name}Response.from(service.create(entity));
-    }
-
-    @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Long id) {
-        service.delete(id);
+    public ResponseEntity<{Name}Dto> create(@Valid @RequestBody {Name}Dto dto) {
+        {Name} entity = {name}Mapper.toEntity(dto);
+        clinicService.save{Name}(entity);
+        return new ResponseEntity<>({name}Mapper.toDto(entity), HttpStatus.CREATED);
     }
 }
 ```
+
+## Reference Implementations
+- **Simple entity (no relationships)**: See `PetTypeMapper`, `PetTypeRestController`
+- **Complex entity (with relationships)**: See `OwnerMapper`, `OwnerRestController`
+- **Relationship DTOs**: See `relationships.instructions.md` for how to handle entity references in DTOs
 
 ## Validation Error Handling
-The `GlobalExceptionHandler` in `config/` automatically converts `@Valid` failures into structured JSON:
-```json
-{
-    "timestamp": "2026-03-05T12:00:00Z",
-    "status": 400,
-    "error": "Bad Request",
-    "message": "Validation failed",
-    "errors": { "fieldName": "field is required" },
-    "path": "/api/resources"
-}
-```
+The `ExceptionControllerAdvice` in `rest/advice/` handles error responses with `BindingResult` for validation errors.

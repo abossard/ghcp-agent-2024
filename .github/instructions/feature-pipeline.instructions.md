@@ -11,19 +11,19 @@ When asked to implement a feature, follow this EXACT pipeline. Do not skip steps
 ### Phase 1: Understand
 1. Read the feature specification carefully
 2. Identify: entity name, fields, validation rules, relationships, business logic
-3. Read existing code patterns (look at Greeting as the reference implementation)
+3. Read existing code patterns (look at Owner for complex entities with relationships, PetType for simple entities without relationships)
 
 ### Phase 2: Build (in this order)
-1. **Entity** → `src/main/java/com/example/demo/model/{Name}.java`
-2. **Repository** → `src/main/java/com/example/demo/repository/{Name}Repository.java`
-3. **Request DTO** → `src/main/java/com/example/demo/controller/dto/Create{Name}Request.java`
-4. **Response DTO** → `src/main/java/com/example/demo/controller/dto/{Name}Response.java`
-5. **Service** → `src/main/java/com/example/demo/service/{Name}Service.java`
-6. **Controller** → `src/main/java/com/example/demo/controller/{Name}Controller.java`
+1. **Entity** → `src/main/java/org/springframework/samples/petclinic/model/{Name}.java` (extend BaseEntity, NamedEntity, or Person as appropriate)
+2. **Repository** → `src/main/java/org/springframework/samples/petclinic/repository/{Name}Repository.java`
+3. **MapStruct Mapper** → `src/main/java/org/springframework/samples/petclinic/mapper/{Name}Mapper.java` (entity ↔ DTO conversion)
+4. **DTOs** → Generated from `src/main/resources/openapi.yml` (add schema definition, then rebuild)
+5. **Service** → Add methods to `ClinicService` interface and `ClinicServiceImpl`
+6. **Controller** → `src/main/java/org/springframework/samples/petclinic/rest/controller/{Name}RestController.java`
 
 ### Phase 3: Test (in this order)
-7. **Service Test** → `src/test/java/com/example/demo/service/{Name}ServiceTest.java`
-8. **Controller Test** → `src/test/java/com/example/demo/controller/{Name}ControllerTest.java`
+7. **Service Test** → `src/test/java/org/springframework/samples/petclinic/service/{Name}ServiceTest.java`
+8. **Controller Test** → `src/test/java/org/springframework/samples/petclinic/rest/controller/{Name}RestControllerTest.java`
 
 ### Phase 4: Verify
 9. Run `./mvnw clean test` — all tests MUST pass
@@ -34,14 +34,28 @@ When asked to implement a feature, follow this EXACT pipeline. Do not skip steps
 12. List all tests and their status
 13. Show the API endpoints created
 
-## Reference Implementation
-The `Greeting` feature is the reference. Look at these files to understand the pattern:
-- Entity: `src/main/java/com/example/demo/model/Greeting.java`
-- Repository: `src/main/java/com/example/demo/repository/GreetingRepository.java`
-- Service: `src/main/java/com/example/demo/service/GreetingService.java`
-- Controller: `src/main/java/com/example/demo/controller/GreetingController.java`
-- Request DTO: `src/main/java/com/example/demo/controller/dto/CreateGreetingRequest.java`
-- Response DTO: `src/main/java/com/example/demo/controller/dto/GreetingResponse.java`
-- Service Test: `src/test/java/com/example/demo/service/GreetingServiceTest.java`
-- Controller Test: `src/test/java/com/example/demo/controller/GreetingControllerTest.java`
-- Error Handler: `src/main/java/com/example/demo/config/GlobalExceptionHandler.java`
+## Reference Implementations
+
+### Owner (complex entity with relationships)
+The `Owner` feature is the reference for entities that have relationships to other entities:
+- Entity: `src/main/java/org/springframework/samples/petclinic/model/Owner.java` (extends Person)
+- Repository: `src/main/java/org/springframework/samples/petclinic/repository/OwnerRepository.java`
+- Mapper: `src/main/java/org/springframework/samples/petclinic/mapper/OwnerMapper.java` (MapStruct)
+- Service: `ClinicService` / `ClinicServiceImpl` (owner-related methods)
+- Controller: `src/main/java/org/springframework/samples/petclinic/rest/controller/OwnerRestController.java`
+- DTOs: Generated from `src/main/resources/openapi.yml` (OwnerDto, OwnerFieldsDto)
+
+### PetType (simple entity without relationships)
+The `PetType` feature is the reference for simple standalone entities:
+- Entity: `src/main/java/org/springframework/samples/petclinic/model/PetType.java` (extends NamedEntity)
+- Repository: `src/main/java/org/springframework/samples/petclinic/repository/PetTypeRepository.java`
+- Mapper: `src/main/java/org/springframework/samples/petclinic/mapper/PetTypeMapper.java` (MapStruct)
+- Service: `ClinicService` / `ClinicServiceImpl` (petType-related methods)
+- Controller: `src/main/java/org/springframework/samples/petclinic/rest/controller/PetTypeRestController.java`
+- DTOs: Generated from `src/main/resources/openapi.yml` (PetTypeDto, PetTypeFieldsDto)
+
+### Shared
+- OpenAPI spec: `src/main/resources/openapi.yml` (defines all DTOs and API contracts)
+- Entity hierarchy: `BaseEntity` → `NamedEntity` → ... and `BaseEntity` → `Person` → ...
+- Service layer: `ClinicService` (interface) + `ClinicServiceImpl` (implementation)
+- Error Handler: `src/main/java/org/springframework/samples/petclinic/rest/advice/ExceptionControllerAdvice.java`

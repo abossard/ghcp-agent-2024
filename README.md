@@ -2,7 +2,7 @@
 
 > **Unlock agentic AI-assisted development with GitHub Copilot in restricted Financial Services (FSI) environments — no MCP required.**
 
-This starter project demonstrates how to prepare a Spring Boot application for maximum productivity with GitHub Copilot's Agent Mode, even when MCP (Model Context Protocol) is blocked by organizational policy.
+This starter project demonstrates how to prepare a Spring Boot application — built around the classic **PetClinic** domain (Owners, Pets, Vets, Visits) — for maximum productivity with GitHub Copilot's Agent Mode, even when MCP (Model Context Protocol) is blocked by organizational policy.
 
 ## 🎯 What This Project Solves
 
@@ -30,7 +30,7 @@ graph TB
     AGENTS --> Config["Instructions + Skills + Prompts<br/>Java 21 · Spring Boot · Security<br/>Maven · Testing · Diagramming"]
     AGENTS --> Modes["Chat Modes<br/>Dev · Test · Review"]
 
-    Agents --> APP["🌱 Spring Boot 3.4.x / Java 21<br/>Controller → Service → Repository → Entity"]
+    Agents --> APP["🌱 Spring Boot 3.4.x / Java 21<br/>PetClinic REST: Owner · Pet · Vet · Visit · PetType · Specialty<br/>Controller → MapStruct Mapper → ClinicService → Repository → Entity<br/>OpenAPI-first DTOs · 3 Repository Implementations"]
     Config --> APP
     Modes --> APP
 
@@ -112,10 +112,12 @@ flowchart TB
 │       └── diagramming/SKILL.md       #    🆕 Architecture & ERD diagrams
 │
 ├── docs/diagrams/                     # 📊 Generated diagram output
-│   ├── architecture.py                #    Architecture diagram source
-│   ├── architecture.png               #    Rendered architecture
-│   ├── erd.py                         #    ERD source
-│   └── erd.png                        #    Rendered ERD
+│   ├── architecture.mmd              #    Architecture diagram source (Mermaid)
+│   ├── architecture.svg              #    Rendered architecture
+│   ├── erd.mmd                       #    ERD source (Mermaid)
+│   ├── erd.svg                       #    Rendered ERD
+│   ├── class-diagram.mmd            #    Class diagram source (Mermaid)
+│   └── class-diagram.svg            #    Rendered class diagram
 │
 ├── docs/                              # 📚 Research & documentation
 │   ├── research-notes.md              #    Deep research findings
@@ -124,20 +126,77 @@ flowchart TB
 │
 └── src/
     ├── main/
-    │   ├── java/com/example/demo/
-    │   │   ├── DemoApplication.java
-    │   │   ├── controller/
+    │   ├── java/org/springframework/samples/petclinic/
+    │   │   ├── PetClinicApplication.java
+    │   │   ├── config/
+    │   │   │   └── ApplicationConfig.java
+    │   │   ├── mapper/                     # MapStruct mappers (entity <-> DTO)
+    │   │   │   ├── OwnerMapper.java
+    │   │   │   ├── PetMapper.java
+    │   │   │   ├── PetTypeMapper.java
+    │   │   │   ├── VetMapper.java
+    │   │   │   ├── VisitMapper.java
+    │   │   │   ├── SpecialtyMapper.java
+    │   │   │   └── UserMapper.java
+    │   │   ├── model/                      # JPA entities (BaseEntity hierarchy)
+    │   │   │   ├── BaseEntity.java
+    │   │   │   ├── NamedEntity.java
+    │   │   │   ├── Person.java
+    │   │   │   ├── Owner.java
+    │   │   │   ├── Pet.java
+    │   │   │   ├── PetType.java
+    │   │   │   ├── Vet.java
+    │   │   │   ├── Visit.java
+    │   │   │   ├── Specialty.java
+    │   │   │   ├── User.java
+    │   │   │   └── Role.java
+    │   │   ├── rest/                       # REST controllers
+    │   │   │   ├── OwnerRestController.java
+    │   │   │   ├── PetRestController.java
+    │   │   │   ├── PetTypeRestController.java
+    │   │   │   ├── VetRestController.java
+    │   │   │   ├── VisitRestController.java
+    │   │   │   ├── SpecialtyRestController.java
+    │   │   │   └── UserRestController.java
+    │   │   ├── rest/dto/                   # DTOs (generated from openapi.yml)
+    │   │   │   ├── OwnerDto.java
+    │   │   │   ├── PetDto.java
+    │   │   │   ├── PetTypeDto.java
+    │   │   │   ├── VetDto.java
+    │   │   │   ├── VisitDto.java
+    │   │   │   ├── SpecialtyDto.java
+    │   │   │   └── UserDto.java
+    │   │   ├── security/                   # Spring Security config
     │   │   ├── service/
-    │   │   ├── model/
-    │   │   └── repository/
+    │   │   │   ├── ClinicService.java
+    │   │   │   ├── ClinicServiceImpl.java
+    │   │   │   ├── UserService.java
+    │   │   │   └── UserServiceImpl.java
+    │   │   └── repository/                 # 3 implementations: JDBC, JPA, Spring Data
+    │   │       ├── OwnerRepository.java
+    │   │       ├── PetRepository.java
+    │   │       ├── PetTypeRepository.java
+    │   │       ├── VetRepository.java
+    │   │       ├── VisitRepository.java
+    │   │       ├── SpecialtyRepository.java
+    │   │       ├── UserRepository.java
+    │   │       ├── jdbc/                   # JDBC implementations
+    │   │       ├── jpa/                    # JPA implementations
+    │   │       └── springdatajpa/          # Spring Data JPA implementations
     │   └── resources/
-    │       └── application.yml
+    │       ├── application.properties
+    │       ├── openapi.yml                 # OpenAPI spec (DTOs generated from this)
+    │       └── db/
+    │           ├── hsqldb/
+    │           ├── mysql/
+    │           └── postgresql/
     └── test/
-        ├── java/com/example/demo/
-        │   ├── controller/
-        │   └── service/
+        ├── java/org/springframework/samples/petclinic/
+        │   ├── rest/
+        │   ├── service/
+        │   └── mapper/
         └── resources/
-            └── application.yml
+            └── application-test.properties
 ```
 
 ## 🚀 Quick Start
@@ -159,9 +218,13 @@ cd agentic-spring-boot-starter
 # Run the application
 ./mvnw spring-boot:run
 
-# Test the API
-curl http://localhost:8080/api/health
-curl http://localhost:8080/api/greetings
+# Test the API (port 9966, context path /petclinic/)
+curl http://localhost:9966/petclinic/api/owners
+curl http://localhost:9966/petclinic/api/pets
+curl http://localhost:9966/petclinic/api/vets
+curl http://localhost:9966/petclinic/api/visits
+curl http://localhost:9966/petclinic/api/pettypes
+curl http://localhost:9966/petclinic/api/specialties
 ```
 
 ### Using Copilot Agent Mode
@@ -175,25 +238,42 @@ curl http://localhost:8080/api/greetings
    - **Full Auto** — maximum autonomy for feature implementation
 5. Use slash commands from the prompts: `/implement-feature`, `/new-rest-endpoint`, `/write-tests`, `/security-review`
 
+### OpenAPI-First Architecture
+
+This project follows an **OpenAPI-first** workflow:
+- DTOs are generated from `src/main/resources/openapi.yml`
+- **MapStruct** mappers handle entity-to-DTO conversion (no manual mapping code)
+- The repository layer supports 3 interchangeable implementations: JDBC, JPA, and Spring Data JPA (selected via Spring profiles)
+
 ### Implementing a Feature Autonomously
 The killer use case — give the agent a feature spec, it builds everything:
 
 1. Switch to **Full Auto** chat mode
 2. Use the `/implement-feature` prompt
-3. Describe your feature:
+3. Describe your feature using the OpenAPI-first workflow:
    ```
    /implement-feature
 
-   Create a "Product" feature with these fields:
-   - name (required, max 100 chars)
-   - description (optional, max 500 chars)
-   - price (required, positive decimal)
-   - category (required, one of: ELECTRONICS, BOOKS, CLOTHING)
-   
-   Include full CRUD with search by category.
+   Add a "MedicalRecord" feature for pets with these fields:
+   - pet (required, reference to existing Pet)
+   - recordDate (required, date)
+   - diagnosis (required, max 255 chars)
+   - treatment (optional, max 500 chars)
+
+   Follow the OpenAPI-first workflow:
+   1. Define the DTO schema in openapi.yml
+   2. Create the JPA entity extending BaseEntity
+   3. Create the MapStruct mapper
+   4. Add methods to ClinicService
+   5. Create the REST controller
+   6. Include CRUD with search by pet.
    ```
 4. The agent will autonomously:
-   - Create Entity, Repository, DTOs, Service, Controller
+   - Update openapi.yml with new DTO schemas
+   - Create Entity extending the proper base class
+   - Create MapStruct mapper for entity/DTO conversion
+   - Add service methods to ClinicService
+   - Create REST controller
    - Write unit + integration tests
    - Run `./mvnw test` to verify
    - Report what it built
@@ -222,18 +302,19 @@ sequenceDiagram
 
     Dev->>VSC: Opens project
     VSC->>GHC: Loads AGENTS.md + Instructions
-    Dev->>GHC: "Create a new User endpoint"
+    Dev->>GHC: "Create a new MedicalRecord feature"
     GHC->>Agent: Activates Spring Boot Developer agent
-    Agent->>Code: Reads existing code structure
-    Agent->>Code: Creates User entity, repository, service, controller
+    Agent->>Code: Reads existing PetClinic code structure
+    Agent->>Code: Defines DTO in openapi.yml
+    Agent->>Code: Creates entity, MapStruct mapper, ClinicService methods, REST controller
     Agent->>Code: Creates unit + integration tests
     Agent->>CLI: ./mvnw test
     CLI-->>Agent: ✅ All tests pass
     Agent->>CLI: git diff
     CLI-->>Agent: Shows changes
-    Agent-->>Dev: "Created User CRUD with 4 files + 2 test files. All 7 tests pass."
+    Agent-->>Dev: "Created MedicalRecord CRUD: openapi.yml, entity, mapper, service, controller + tests. All tests pass."
     Dev->>GHC: Switch to Review Mode
-    Dev->>GHC: "Review the User endpoint"
+    Dev->>GHC: "Review the MedicalRecord endpoint"
     GHC->>Agent: Activates Security Reviewer agent
     Agent->>Code: Scans for security issues
     Agent-->>Dev: "No critical findings. 1 suggestion: add rate limiting."
@@ -266,7 +347,7 @@ graph TB
     end
 
     A & B & C & D --> E["🤖 Autonomous Pipeline"]
-    E --> F["Entity · DTOs · Service · Controller · Tests"]
+    E --> F["openapi.yml · Entity · MapStruct Mapper · ClinicService · Controller · Tests"]
     F --> J["./mvnw test"]
     J -->|"✅ Pass"| K["Done"]
     J -->|"❌ Fail"| L["Auto-fix & Retry"] --> J
@@ -289,7 +370,7 @@ graph TB
 | `chat.tools.autoApprove` | `false` | ⚠️ Keep false for FSI safety |
 
 ### The Pattern The Agent Follows
-The `implement-feature` prompt + `feature-pipeline` instruction file teach the agent to follow an exact 10-step pipeline — matching the existing `Greeting` reference implementation. This is critical: **the agent learns by reading your existing code patterns, not just instructions**.
+The `implement-feature` prompt + `feature-pipeline` instruction file teach the agent to follow an OpenAPI-first pipeline: define the DTO in `openapi.yml`, create the JPA entity (extending `BaseEntity`/`NamedEntity`/`Person`), add a MapStruct mapper, implement `ClinicService` methods, and build the REST controller. The agent learns by reading the existing codebase patterns (e.g., `Owner` for a complex entity with relationships, `PetType` for a simple named entity, `Visit` for a dependent entity). This is critical: **the agent learns by reading your existing code patterns, not just instructions**.
 
 ## 📊 New: Diagramming, Orchestration & Quality Gates
 
@@ -297,7 +378,7 @@ Five new capabilities inspired by [petender/tdd-azd-demo-builder](https://github
 
 ### 1. Diagrammer Agent — Architecture & ERD Diagrams
 
-Automatically generates PNG architecture diagrams and JPA Entity-Relationship Diagrams by scanning your source code.
+Automatically generates SVG architecture diagrams and JPA Entity-Relationship Diagrams by scanning your source code.
 
 **How to use:**
 ```
@@ -311,23 +392,24 @@ Generate an architecture diagram for this project
 
 **What it does:**
 - Reads `pom.xml`, `application.yml`, controllers, services, repositories
-- Generates Python scripts using the `diagrams` library
-- Executes them to produce PNG images in `docs/diagrams/`
+- Generates Mermaid (.mmd) diagram definitions
+- Renders them to SVG images in `docs/diagrams/`
 - For ERDs: scans `@Entity` classes, extracts fields, relationships, and annotations
 
 **Prerequisites** (installed automatically by the agent):
 ```bash
-pip install diagrams graphviz
-brew install graphviz  # macOS
+npm install -g @mermaid-js/mermaid-cli
 ```
 
 **Output:**
 | File | Content |
 |---|---|
-| `docs/diagrams/architecture.py` | Architecture diagram source |
-| `docs/diagrams/architecture.png` | Rendered architecture diagram |
-| `docs/diagrams/erd.py` | ERD source |
-| `docs/diagrams/erd.png` | Rendered Entity-Relationship Diagram |
+| `docs/diagrams/architecture.mmd` | Architecture diagram source (Mermaid) |
+| `docs/diagrams/architecture.svg` | Rendered architecture diagram |
+| `docs/diagrams/erd.mmd` | ERD source (Mermaid) |
+| `docs/diagrams/erd.svg` | Rendered Entity-Relationship Diagram |
+| `docs/diagrams/class-diagram.mmd` | Class diagram source (Mermaid) |
+| `docs/diagrams/class-diagram.svg` | Rendered class diagram |
 
 ### 2. Research-First Instruction — Think Before You Code
 
@@ -348,12 +430,12 @@ An orchestrator agent that builds complete features by delegating to specialized
 ```
 # In VS Code Copilot Chat, select "A24 Execution Lead", then describe your feature:
 
-Create a "Product" feature with fields:
-- name (required, max 100 chars)
-- description (optional, max 500 chars)
-- price (required, positive decimal)
-- category (enum: ELECTRONICS, BOOKS, CLOTHING)
-Include CRUD with search by category.
+Create a "Visit" feature with fields:
+- pet (required, reference to existing Pet)
+- visitDate (required, date)
+- description (required, max 255 chars)
+- vet (optional, reference to existing Vet)
+Include CRUD with search by pet and by date range.
 ```
 
 **The pipeline:**
