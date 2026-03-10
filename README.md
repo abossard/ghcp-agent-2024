@@ -6,15 +6,59 @@ This starter project demonstrates how to prepare a Spring Boot application — b
 
 ## 🎯 What This Project Solves
 
-In many FSI environments (like Swiss Re), developers face significant restrictions:
-- ❌ MCP is blocked by policy
-- ❌ Open-source AI tools are not allowed
-- ❌ Premium tokens are limited
-- ⚠️ WSL2 has incompatibility with Windows Copilot extensions
-- ✅ Official VS Code + GitHub Copilot IS available
-- ✅ Agent Mode IS enabled
+In many FSI environments, developers face significant restrictions:
 
-**This starter shows how to maximize agentic development within these constraints** using only built-in VS Code + Copilot features: custom agents, skills, instructions, prompts, chat modes, and terminal tool automation.
+| Constraint | Status |
+|-----------|--------|
+| MCP (Model Context Protocol) | ❌ Blocked by policy |
+| Open-source AI tools | ❌ Not allowed |
+| Premium tokens | ⚠️ Limited |
+| VS Code + GitHub Copilot | ✅ Available |
+| Agent Mode | ✅ Enabled |
+
+**This starter maximizes agentic development within these constraints** — using only built-in VS Code + Copilot features: custom agents, skills, instructions, prompts, and terminal automation.
+
+---
+
+## 🧠 The Evolution of AI-Assisted Coding
+
+AI coding tools have evolved through three distinct generations. Understanding where you are on this spectrum determines what's possible — and what isn't.
+
+```mermaid
+graph LR
+    subgraph GEN1 ["Generation 1\n<b>Code Completion</b>"]
+        G1["Tab to accept\nLine-by-line suggestions\nNo context beyond current file"]
+    end
+
+    subgraph GEN2 ["Generation 2\n<b>Planning & Coding Assistance</b>"]
+        G2["Multi-file edits\nChat + agent mode\nReads codebase, runs commands\nFollows instructions & conventions"]
+    end
+
+    subgraph GEN3 ["Generation 3\n<b>Autonomous Agents</b>"]
+        G3["Goal-oriented loops\nPlans → builds → tests → fixes\nSelf-correcting until done\nFilesystem as memory"]
+    end
+
+    GEN1 -->|"+ context\n+ tools"| GEN2
+    GEN2 -->|"+ control loop\n+ persistence"| GEN3
+
+    style GEN1 fill:#95a5a6,color:#fff,stroke:#7f8c8d
+    style GEN2 fill:#3498db,color:#fff,stroke:#2980b9
+    style GEN3 fill:#27ae60,color:#fff,stroke:#1e8449
+```
+
+| | Gen 1: Completion | Gen 2: Assistance | Gen 3: Autonomy |
+|--|---|---|---|
+| **Interaction** | Tab to accept | Chat / agent mode | Goal in, code out |
+| **Scope** | Current line/block | Multi-file, cross-project | Entire feature end-to-end |
+| **Context** | Current file | Codebase + instructions | PRD + progress files + git |
+| **Control** | Human drives everything | Human guides, AI executes | AI loops until done |
+| **Example** | Copilot completions | Copilot Agent Mode | CLI Ralph Loop (bash + AI) |
+
+> **VS Code Copilot Agent Mode sits between Gen 2 and Gen 3.** It can plan, edit multiple files, run terminal commands, and self-correct — but it lacks a hard external control loop. The AI is both the worker _and_ the loop controller, which makes full autonomy probabilistic rather than guaranteed.
+>
+> This project pushes VS Code as close to Gen 3 as possible using custom agents, file-based state, and the handoff protocol described below.
+
+---
 
 ## 📊 Architecture Overview
 
@@ -60,10 +104,13 @@ flowchart TB
 
 ## 📁 Project Structure
 
+<details>
+<summary>Click to expand full project tree</summary>
+
 ```
 .
 ├── AGENTS.md                          # 🤖 Main agent instructions (read by ALL agents)
-├── README.md                          # 📖 This file
+├── PRD.md / PROGRESS.md               # 📋 Ralph Loop state files
 ├── pom.xml                            # 📦 Maven build configuration
 │
 ├── .vscode/
@@ -72,132 +119,29 @@ flowchart TB
 │
 ├── .github/
 │   ├── copilot-instructions.md        # 📋 Project-wide Copilot instructions
-│   │
-│   ├── agents/                        # 🤖 Custom agent definitions
-│   │   ├── spring-boot-developer.md   #    Full-stack Spring Boot developer
-│   │   ├── test-engineer.md           #    Testing specialist
-│   │   ├── security-reviewer.md       #    FSI security reviewer
-│   │   ├── api-designer.md            #    REST API designer
-│   │   ├── execution-lead.agent.md    #    🆕 Pipeline orchestrator
-│   │   └── diagrammer.agent.md        #    🆕 Architecture & ERD diagrams
-│   │
-│   ├── instructions/                  # 📝 Context-specific instructions
-│   │   ├── java.instructions.md       #    Java 21 coding style
-│   │   ├── spring-boot.instructions.md#    Spring Boot patterns
-│   │   ├── testing.instructions.md    #    Testing conventions
-│   │   ├── security.instructions.md   #    FSI security requirements
-│   │   ├── research-first.instructions.md  # 🆕 Research before implementation
-│   │   └── quality-gates.instructions.md   # 🆕 Automated quality enforcement
-│   │
+│   ├── agents/                        # 🤖 Custom agents (Ralph Loop + specialists)
+│   ├── instructions/                  # 📝 Context-specific coding rules
 │   ├── prompts/                       # ⚡ Reusable prompt templates
-│   │   ├── new-rest-endpoint.prompt.md#    Create complete REST endpoint
-│   │   ├── write-tests.prompt.md      #    Write tests for a class
-│   │   ├── security-review.prompt.md  #    Run security audit
-│   │   ├── refactor-service.prompt.md #    Refactor a service
-│   │   ├── add-entity.prompt.md       #    Add JPA entity
-│   │   ├── explain-codebase.prompt.md #    Explain architecture
-│   │   ├── generate-erd.prompt.md     #    🆕 Generate JPA ERD diagram
-│   │   └── generate-architecture-diagram.prompt.md # 🆕 Architecture diagram
-│   │
-│   ├── chatmodes/                     # 🎭 Custom chat modes
-│   │   ├── spring-dev.chatmode.md     #    Development mode
-│   │   ├── test-mode.chatmode.md      #    Testing mode
-│   │   └── review-mode.chatmode.md    #    Code review mode
-│   │
-│   └── skills/                        # 🛠️ Agent skills
-│       ├── maven-build/SKILL.md       #    Maven build automation
-│       ├── spring-testing/SKILL.md    #    Spring Boot testing
-│       ├── api-development/SKILL.md   #    REST API development
-│       ├── database-migration/SKILL.md#    Database schema management
-│       └── diagramming/SKILL.md       #    🆕 Architecture & ERD diagrams
+│   ├── chatmodes/                     # 🎭 Custom chat modes (dev/test/review)
+│   └── skills/                        # 🛠️ Domain knowledge for agents
 │
-├── docs/diagrams/                     # 📊 Generated diagram output
-│   ├── architecture.mmd              #    Architecture diagram source (Mermaid)
-│   ├── architecture.svg              #    Rendered architecture
-│   ├── erd.mmd                       #    ERD source (Mermaid)
-│   ├── erd.svg                       #    Rendered ERD
-│   ├── class-diagram.mmd            #    Class diagram source (Mermaid)
-│   └── class-diagram.svg            #    Rendered class diagram
-│
-├── docs/                              # 📚 Research & documentation
-│   ├── research-notes.md              #    Deep research findings
-│   ├── agentic-development-guide.md   #    How-to guide for teams
-│   └── fsi-constraints-workarounds.md #    FSI-specific guidance
+├── docs/diagrams/                     # 📊 Generated Mermaid diagrams (SVG + source)
 │
 └── src/
-    ├── main/
-    │   ├── java/org/springframework/samples/petclinic/
-    │   │   ├── PetClinicApplication.java
-    │   │   ├── config/
-    │   │   │   └── ApplicationConfig.java
-    │   │   ├── mapper/                     # MapStruct mappers (entity <-> DTO)
-    │   │   │   ├── OwnerMapper.java
-    │   │   │   ├── PetMapper.java
-    │   │   │   ├── PetTypeMapper.java
-    │   │   │   ├── VetMapper.java
-    │   │   │   ├── VisitMapper.java
-    │   │   │   ├── SpecialtyMapper.java
-    │   │   │   └── UserMapper.java
-    │   │   ├── model/                      # JPA entities (BaseEntity hierarchy)
-    │   │   │   ├── BaseEntity.java
-    │   │   │   ├── NamedEntity.java
-    │   │   │   ├── Person.java
-    │   │   │   ├── Owner.java
-    │   │   │   ├── Pet.java
-    │   │   │   ├── PetType.java
-    │   │   │   ├── Vet.java
-    │   │   │   ├── Visit.java
-    │   │   │   ├── Specialty.java
-    │   │   │   ├── User.java
-    │   │   │   └── Role.java
-    │   │   ├── rest/                       # REST controllers
-    │   │   │   ├── OwnerRestController.java
-    │   │   │   ├── PetRestController.java
-    │   │   │   ├── PetTypeRestController.java
-    │   │   │   ├── VetRestController.java
-    │   │   │   ├── VisitRestController.java
-    │   │   │   ├── SpecialtyRestController.java
-    │   │   │   └── UserRestController.java
-    │   │   ├── rest/dto/                   # DTOs (generated from openapi.yml)
-    │   │   │   ├── OwnerDto.java
-    │   │   │   ├── PetDto.java
-    │   │   │   ├── PetTypeDto.java
-    │   │   │   ├── VetDto.java
-    │   │   │   ├── VisitDto.java
-    │   │   │   ├── SpecialtyDto.java
-    │   │   │   └── UserDto.java
-    │   │   ├── security/                   # Spring Security config
-    │   │   ├── service/
-    │   │   │   ├── ClinicService.java
-    │   │   │   ├── ClinicServiceImpl.java
-    │   │   │   ├── UserService.java
-    │   │   │   └── UserServiceImpl.java
-    │   │   └── repository/                 # 3 implementations: JDBC, JPA, Spring Data
-    │   │       ├── OwnerRepository.java
-    │   │       ├── PetRepository.java
-    │   │       ├── PetTypeRepository.java
-    │   │       ├── VetRepository.java
-    │   │       ├── VisitRepository.java
-    │   │       ├── SpecialtyRepository.java
-    │   │       ├── UserRepository.java
-    │   │       ├── jdbc/                   # JDBC implementations
-    │   │       ├── jpa/                    # JPA implementations
-    │   │       └── springdatajpa/          # Spring Data JPA implementations
-    │   └── resources/
-    │       ├── application.properties
-    │       ├── openapi.yml                 # OpenAPI spec (DTOs generated from this)
-    │       └── db/
-    │           ├── hsqldb/
-    │           ├── mysql/
-    │           └── postgresql/
-    └── test/
-        ├── java/org/springframework/samples/petclinic/
-        │   ├── rest/
-        │   ├── service/
-        │   └── mapper/
-        └── resources/
-            └── application-test.properties
+    ├── main/java/.../petclinic/
+    │   ├── model/                     # JPA entities (BaseEntity hierarchy)
+    │   ├── mapper/                    # MapStruct mappers (entity ↔ DTO)
+    │   ├── repository/                # 3 implementations: JDBC, JPA, Spring Data
+    │   ├── service/                   # ClinicService facade
+    │   ├── rest/controller/           # REST controllers (implement generated APIs)
+    │   └── security/                  # Spring Security config
+    ├── main/resources/
+    │   ├── openapi.yml                # OpenAPI spec → generated DTOs + API interfaces
+    │   └── application.properties     # Port 9966, context /petclinic/
+    └── test/                          # JUnit 5 + Mockito + MockMvc tests
 ```
+
+</details>
 
 ## 🚀 Quick Start
 
@@ -291,6 +235,9 @@ The killer use case — give the agent a feature spec, it builds everything:
 
 ## 🔄 The Agentic Workflow
 
+<details>
+<summary>Sequence diagram — how developer, Copilot, and CLI interact</summary>
+
 ```mermaid
 sequenceDiagram
     participant Dev as Developer
@@ -320,25 +267,23 @@ sequenceDiagram
     Agent-->>Dev: "No critical findings. 1 suggestion: add rate limiting."
 ```
 
-## 📖 VS Code Settings Highlights
+</details>
 
-The `.vscode/settings.json` is pre-configured for maximum agentic productivity:
+## 📖 VS Code Settings & Autonomy Configuration
 
-| Setting | Purpose |
-|---------|---------|
-| `chat.agent.enabled` | Enables Agent Mode |
-| `chat.tools.terminal.allowlist` | Auto-approves safe Maven/Git/Java commands |
-| `chat.tools.terminal.denylist` | Blocks dangerous commands (rm -rf, sudo) |
-| `chat.instructionsFilesLocations` | Points to `.github/instructions/` |
-| `chat.promptFilesLocations` | Points to `.github/prompts/` |
-| `chat.modeFilesLocations` | Points to `.github/chatmodes/` |
-| `github.copilot.chat.codeGeneration.useInstructionFiles` | Enables instruction files |
+<details>
+<summary>Key settings that enable autonomous agent behavior</summary>
 
-## 🤖 Full Autonomous Feature Implementation
-
-The key innovation: the agent can implement a **complete feature from a spec** without human intervention.
-
-### What Makes This Possible (Without MCP)
+| Setting | Value | What It Does |
+|---------|-------|-------------|
+| `chat.agent.enabled` | `true` | Enables Agent Mode |
+| `chat.tools.edits.autoApprove` | `true` | Agent creates/edits files without dialog |
+| `chat.agent.autoFix` | `true` | Agent self-corrects compilation errors |
+| `chat.agent.runTasks` | `true` | Agent runs VS Code build tasks |
+| `chat.agent.maxRequests` | `50` | Allows complex multi-step implementations |
+| `chat.tools.terminal.allowlist` | (regex) | Auto-approves `./mvnw`, `git`, `curl` |
+| `chat.tools.terminal.denylist` | (patterns) | Blocks dangerous commands |
+| `chat.tools.autoApprove` | `false` | ⚠️ Keep false for FSI safety |
 
 ```mermaid
 graph TB
@@ -357,135 +302,41 @@ graph TB
     style L fill:#e67e22,color:#fff
 ```
 
-### Key Settings That Enable Autonomy
+The `implement-feature` prompt + `feature-pipeline` instruction teach the agent to follow an OpenAPI-first pipeline. The agent learns by reading your existing code patterns (e.g., `Owner` for complex entities, `PetType` for simple ones).
 
-| Setting | Value | What It Does |
-|---------|-------|-------------|
-| `chat.tools.edits.autoApprove` | `true` | Agent creates/edits files without dialog |
-| `chat.agent.autoFix` | `true` | Agent self-corrects compilation errors |
-| `chat.agent.runTasks` | `true` | Agent runs VS Code build tasks |
-| `chat.agent.maxRequests` | `50` | Allows complex multi-step implementations |
-| `terminal.allowlist` | (regex) | Auto-approves `./mvnw`, `git`, `curl` |
-| `terminal.denylist` | (patterns) | Blocks dangerous commands |
-| `chat.tools.autoApprove` | `false` | ⚠️ Keep false for FSI safety |
+</details>
 
-### The Pattern The Agent Follows
-The `implement-feature` prompt + `feature-pipeline` instruction file teach the agent to follow an OpenAPI-first pipeline: define the DTO in `openapi.yml`, create the JPA entity (extending `BaseEntity`/`NamedEntity`/`Person`), add a MapStruct mapper, implement `ClinicService` methods, and build the REST controller. The agent learns by reading the existing codebase patterns (e.g., `Owner` for a complex entity with relationships, `PetType` for a simple named entity, `Visit` for a dependent entity). This is critical: **the agent learns by reading your existing code patterns, not just instructions**.
+## 📊 Orchestration, Diagramming & Quality Gates
 
-## 📊 New: Diagramming, Orchestration & Quality Gates
-
-Five new capabilities inspired by [petender/tdd-azd-demo-builder](https://github.com/petender/tdd-azd-demo-builder), adapted for Spring Boot / Java 21.
+<details>
+<summary>Five capabilities adapted from <a href="https://github.com/petender/tdd-azd-demo-builder">petender/tdd-azd-demo-builder</a> for Spring Boot / Java 21</summary>
 
 ### 1. Diagrammer Agent — Architecture & ERD Diagrams
 
-Automatically generates SVG architecture diagrams and JPA Entity-Relationship Diagrams by scanning your source code.
-
-**How to use:**
+Scans source code, generates Mermaid diagrams, renders to SVG:
 ```
-# In VS Code Copilot Chat, select the "A24 Diagrammer" agent, then:
-Generate an architecture diagram for this project
-
-# Or use the prompts:
-/generate-erd
-/generate-architecture-diagram
-```
-
-**What it does:**
-- Reads `pom.xml`, `application.yml`, controllers, services, repositories
-- Generates Mermaid (.mmd) diagram definitions
-- Renders them to SVG images in `docs/diagrams/`
-- For ERDs: scans `@Entity` classes, extracts fields, relationships, and annotations
-
-**Prerequisites** (installed automatically by the agent):
-```bash
-npm install -g @mermaid-js/mermaid-cli
-```
-
-**Output:**
-| File | Content |
-|---|---|
-| `docs/diagrams/architecture.mmd` | Architecture diagram source (Mermaid) |
-| `docs/diagrams/architecture.svg` | Rendered architecture diagram |
-| `docs/diagrams/erd.mmd` | ERD source (Mermaid) |
-| `docs/diagrams/erd.svg` | Rendered Entity-Relationship Diagram |
-| `docs/diagrams/class-diagram.mmd` | Class diagram source (Mermaid) |
-| `docs/diagrams/class-diagram.svg` | Rendered class diagram |
-
-### 2. Research-First Instruction — Think Before You Code
-
-A global instruction (applied to `**`) that forces ALL agents to research before implementing.
-
-**How it works:**
-- Automatically injected into every agent's context
-- Requires agents to read existing code, patterns, and conventions before creating files
-- Enforces an 80% confidence gate — agents must understand what to build before building it
-
-**No action needed** — this is auto-injected. It improves output quality across all agents.
-
-### 3. Execution Lead — End-to-End Feature Pipeline
-
-An orchestrator agent that builds complete features by delegating to specialized agents in sequence.
-
-**How to use:**
-```
-# In VS Code Copilot Chat, select "A24 Execution Lead", then describe your feature:
-
-Create a "Visit" feature with fields:
-- pet (required, reference to existing Pet)
-- visitDate (required, date)
-- description (required, max 255 chars)
-- vet (optional, reference to existing Vet)
-Include CRUD with search by pet and by date range.
-```
-
-**The pipeline:**
-```
-Step 1: Requirements    → Execution Lead parses your description
-Step 2: API Design      → Delegates to API Designer
-Step 3: Implement       → Delegates to Spring Boot Developer
-Step 4: Test            → Delegates to Test Engineer
-Step 5: Security Review → Delegates to Security Reviewer
-Step 6: Diagram         → Delegates to Diagrammer (optional)
-```
-
-**Each step produces artifacts the next step reads** — agents communicate through files, not messages.
-
-### 4. JPA ERD Generator — Auto-Document Your Data Model
-
-A dedicated prompt that scans all `@Entity` classes and generates a professional ERD.
-
-**How to use:**
-```
+@diagrammer Generate an architecture diagram for this project
 /generate-erd
 ```
 
-**What it extracts from your code:**
-| JPA Annotation | ERD Element |
-|---|---|
-| `@Id` | Primary Key 🔑 |
-| `@ManyToOne` | Foreign Key 🔗 + N:1 arrow |
-| `@OneToMany` | 1:N relationship arrow |
-| `@ManyToMany` | N:M relationship via junction |
-| `@Column(nullable=false)` | NOT NULL constraint |
-| `@Enumerated` | ENUM type |
+### 2. Research-First Instruction
 
-### 5. Quality Gates — Automated Enforcement
+Auto-injected into ALL agents. Forces research (read existing code, conventions) before any implementation. No action needed.
 
-An instruction (applied to `**/*.java`) that enforces minimum quality standards.
+### 3. Execution Lead — Feature Pipeline
 
-**Gates enforced:**
+Orchestrates specialized agents in sequence: Requirements → API Design → Implement → Test → Security Review → Diagram.
+```
+@execution-lead Create a "Visit" feature with fields: pet, visitDate, description, vet
+```
 
-| Gate | Requirement |
-|---|---|
-| **Test** | All tests pass, minimum 3 per service + 3 per controller |
-| **Build** | Zero compilation errors |
-| **Security** | No hardcoded secrets, `@Valid` on all request bodies, no `System.out` |
-| **Naming** | Test methods follow `should{Expected}When{Condition}` |
-| **Git** | No secrets in diff, conventional commit messages |
+### 4. JPA ERD Generator
 
-**No action needed** — auto-injected for all `.java` files. Agents are blocked from reporting success if any gate fails.
+Scans `@Entity` classes → extracts `@Id`, `@ManyToOne`, `@OneToMany`, `@ManyToMany` → generates professional ERD.
 
-### How These 5 Features Work Together
+### 5. Quality Gates
+
+Auto-enforced on all `.java` files: tests must pass (min 3 per class), zero compilation errors, no hardcoded secrets, `@Valid` on request bodies, conventional commit messages. Agents cannot report success if a gate fails.
 
 ```mermaid
 graph TB
@@ -503,96 +354,277 @@ graph TB
     style QG fill:#e74c3c,color:#fff
 ```
 
-## 📋 Prompts Reference
+</details>
 
-Prompt files (`.prompt.md`) are reusable task templates. Invoke them in Copilot Chat via `/` command or Command Palette → "Chat: Run Prompt File".
+## 📋 Prompts & Skills Reference
 
-| Prompt | Description | Invocation |
-|--------|-------------|------------|
-| **add-entity** | Scaffold a JPA entity + repository + validation | `/add-entity` → describe entity |
-| **implement-feature** | Full pipeline: entity → DTO → mapper → service → controller → tests | `/implement-feature` → describe feature |
-| **write-tests** | Comprehensive JUnit 5 tests for an existing class | `/write-tests` → specify class |
-| **refactor-service** | Improve a service class for design, testability, maintainability | `/refactor-service` → specify service |
-| **security-review** | OWASP + FSI security audit with severity-rated findings | `/security-review` → scans full codebase |
-| **explain-codebase** | Generate full architecture overview as Markdown | `/explain-codebase` |
-| **generate-architecture-diagram** | Scan code → Mermaid → SVG architecture diagram | `/generate-architecture-diagram` (uses A24 Diagrammer agent) |
-| **generate-erd** | Scan `@Entity` classes → Mermaid → SVG ERD | `/generate-erd` (uses A24 Diagrammer agent) |
+<details>
+<summary>Prompt files — reusable task templates invoked via <code>/</code> command</summary>
 
-**Tip**: Chain prompts — `/implement-feature` → `/write-tests` → `/security-review` for a complete workflow.
+| Prompt | Description |
+|--------|-------------|
+| `/add-entity` | Scaffold a JPA entity + repository + validation |
+| `/implement-feature` | Full pipeline: entity → DTO → mapper → service → controller → tests |
+| `/write-tests` | Comprehensive JUnit 5 tests for an existing class |
+| `/refactor-service` | Improve a service class for design and testability |
+| `/security-review` | OWASP + FSI security audit |
+| `/generate-erd` | Scan `@Entity` classes → Mermaid → SVG ERD |
+| `/generate-architecture-diagram` | Scan code → Mermaid → SVG architecture diagram |
 
-## 🛠️ Skills Reference
+</details>
 
-Skills are domain knowledge files that agents load automatically when relevant. Located in `.github/skills/`.
+<details>
+<summary>Skills — domain knowledge auto-loaded by agents</summary>
 
-| Skill | Triggers | What It Provides |
-|-------|----------|-----------------|
-| **api-development** | REST endpoints, API design, validation, error handling | HTTP status codes, request/response patterns, OpenAPI conventions |
-| **database-migration** | Schema changes, entity design, H2 console, migrations | JPA/Hibernate config, schema evolution strategies, dev vs prod |
-| **diagramming** | Architecture diagrams, ERD, visual docs | Mermaid patterns, `npx` rendering commands, diagram templates |
-| **maven-build** | Build errors, dependency issues, packaging | `./mvnw` commands, troubleshooting, dependency tree analysis |
-| **spring-testing** | Writing tests, test failures, MockMvc, Mockito | JUnit 5 patterns, test slices, TDD workflow |
-| **playwright-e2e** | Browser tests, API smoke tests, screenshots | Playwright config, test patterns, CI integration |
+| Skill | Triggers |
+|-------|----------|
+| **api-development** | REST endpoints, validation, error handling, OpenAPI |
+| **database-migration** | Schema changes, entity design, H2 console |
+| **diagramming** | Architecture diagrams, ERD, Mermaid rendering |
+| **maven-build** | Build errors, dependencies, packaging |
+| **spring-testing** | JUnit 5, MockMvc, Mockito, TDD |
+| **playwright-e2e** | Browser tests, API smoke tests, screenshots |
+
+</details>
 
 ## 🔄 Ralph Loop — Autonomous Development Cycle
 
-The Ralph Loop is an autonomous coding pattern (inspired by [giocaizzi/ralph-copilot](https://github.com/giocaizzi/ralph-copilot) and [Geoffrey Huntley's Ralph Wiggum pattern](https://ghuntley.com/ralph/)) where agents plan, execute, review, and commit tasks one at a time with fresh context each iteration.
+The Ralph Loop is an autonomous coding pattern (inspired by [giocaizzi/ralph-copilot](https://github.com/giocaizzi/ralph-copilot) and [Geoffrey Huntley's Ralph Wiggum pattern](https://ghuntley.com/ralph/)) where agents plan, execute, review, and commit tasks one at a time — using the **filesystem as memory** instead of conversation history.
 
-### How It Works
+---
+
+### The Ideal: A True Control Loop
+
+In a CLI-based Ralph Loop (e.g., bash + Claude Code), a **hard outer loop** guarantees continuation:
+
+```mermaid
+flowchart LR
+    subgraph BASH ["🖥️ Bash Script (HARD LOOP)"]
+        direction TB
+        S[Start] --> R[Read PROGRESS.md]
+        R --> C{Not-started\ntask?}
+        C -->|Yes| I["Invoke AI agent\n(fresh context)"]
+        I --> T[Run tests]
+        T --> P{Pass?}
+        P -->|Yes| G[git commit]
+        P -->|No| F[Mark blocked]
+        G --> R
+        F --> R
+        C -->|No| D[🏁 Done]
+    end
+
+    style BASH fill:#1a1a2e,color:#e0e0e0,stroke:#00d4ff
+    style S fill:#3498db,color:#fff
+    style D fill:#27ae60,color:#fff
+    style I fill:#f39c12,color:#fff
+```
+
+The bash script is the **control plane** — it can't be distracted, forget, or lose context. It mechanically reads a file, invokes an agent, checks results, and loops. The AI is just a tool called inside the loop.
+
+---
+
+### The VS Code Reality: No Hard Loop
+
+In VS Code with Copilot agent mode, **there is no outer bash loop**. The AI itself _is_ the loop. This is a fundamentally different architecture:
 
 ```mermaid
 flowchart TB
-    A[👤 User describes feature] --> B[RalphPlanner]
-    B --> C[Creates PRD.md + PROGRESS.md]
-    C --> D[👤 User reviews PRD]
-    D --> E[RalphCoordinator]
-    E --> F{Next task?}
-    F -->|Yes| G[RalphExecutor]
-    G --> H[Implements + tests]
-    H --> I[RalphReviewer]
-    I -->|PASS| J[git commit + update PROGRESS.md]
-    I -->|FAIL| G
-    J --> F
-    F -->|All done| K[✅ Feature complete]
+    subgraph VSCODE ["🆚 VS Code — Agent Mode"]
+        direction TB
+        U["👤 User types prompt"] --> A["🤖 AI Agent\n(is both the loop AND the worker)"]
+        A --> A1[Read PROGRESS.md]
+        A1 --> A2[Implement task]
+        A2 --> A3[Run tests]
+        A3 --> A4[Commit]
+        A4 --> A5{{"Should I\ncontinue?\n(AI decides)"}}
+        A5 -->|"✅ Keeps going\n(ideal)"| A1
+        A5 -->|"⚠️ Stops to ask\n(common)"| W["👤 User must\nre-prompt"]
+        A5 -->|"💀 Context full\n(inevitable)"| X["Session dies\n→ start new chat"]
+        W --> A
+        X --> N["👤 New chat\n@ralph-coordinator continue"]
+    end
 
-    style B fill:#3498db,color:#fff
-    style E fill:#f39c12,color:#fff
-    style G fill:#27ae60,color:#fff
-    style I fill:#e74c3c,color:#fff
-    style K fill:#27ae60,color:#fff
+    style VSCODE fill:#1a1a2e,color:#e0e0e0,stroke:#ff6b6b
+    style A fill:#f39c12,color:#fff
+    style A5 fill:#e74c3c,color:#fff
+    style W fill:#95a5a6,color:#fff
+    style X fill:#7f8c8d,color:#fff
 ```
 
-### The Four Ralph Agents
+> **Key insight**: The AI is both the control plane _and_ the worker. There's nothing external forcing it to continue. It may stop, get confused, or run out of context — and there's no mechanism to restart it automatically.
 
-| Agent | Role | Mode |
-|-------|------|------|
-| **RalphPlanner** | Decomposes feature into atomic tasks → `PRD.md` + `PROGRESS.md` | Planning only |
-| **RalphCoordinator** | Orchestrates the loop — dispatches tasks, tracks progress, commits | Orchestration |
-| **RalphExecutor** | Implements exactly ONE task, runs tests, reports back | Read/write |
-| **RalphReviewer** | Reviews changes for quality, tests, security — PASS or FAIL | Read-only |
+---
 
-### Quick Start
+### Why It Might Not Work (Theory)
 
-1. **Plan** — Select `RalphPlanner` in Copilot Chat:
-   ```
-   Create a PRD for: Add an Appointment entity with date, vet, pet, 
-   notes fields. Include CRUD API and web UI page.
-   ```
-2. **Review** — Edit `PRD.md` as needed
-3. **Execute** — Select `RalphCoordinator`:
-   ```
-   Start the Ralph Loop
-   ```
-4. **Watch** — The coordinator will cycle through tasks automatically:
-   - Pick task → Execute → Review → Commit → Next task
-   - Track progress in `PROGRESS.md` and `git log`
+The fundamental problem is **who controls the loop**:
 
-### Why Ralph Loop?
+```mermaid
+flowchart LR
+    subgraph CLI ["✅ CLI Ralph Loop"]
+        B["Bash\n(deterministic)"] -->|"calls"| AI1["AI Agent\n(stateless tool)"]
+        AI1 -->|"returns"| B
+    end
 
-- **Fresh context** every iteration — avoids context pollution
-- **Atomic commits** — one task = one commit, easy to revert
-- **Built-in review** — every change gets reviewed before moving on
-- **Filesystem as memory** — `PRD.md` and `PROGRESS.md` persist across context resets
-- **Language agnostic** — works with any stack (adapted here for Spring Boot)
+    subgraph IDE ["⚠️ VS Code Ralph Loop"]
+        AI2["AI Agent\n(is the loop itself)"] -->|"tries to\ncontinue"| AI2
+    end
+
+    style CLI fill:#d4edda,color:#000,stroke:#27ae60
+    style IDE fill:#fff3cd,color:#000,stroke:#f39c12
+    style B fill:#27ae60,color:#fff
+    style AI1 fill:#3498db,color:#fff
+    style AI2 fill:#f39c12,color:#fff
+```
+
+| Property | CLI Ralph Loop | VS Code Ralph Loop |
+|----------|---------------|-------------------|
+| **Control plane** | Bash script (deterministic) | AI itself (probabilistic) |
+| **Loop guarantee** | ✅ Mechanical — always continues | ⚠️ Depends on model following instructions |
+| **Context reset** | ✅ Fresh process each iteration | ❌ Same session — context accumulates |
+| **Failure recovery** | ✅ Script catches exit codes | ⚠️ AI must self-diagnose |
+| **Max iterations** | ∞ (until disk/quota runs out) | ~5-15 tasks before context window fills |
+| **Resumability** | ✅ Just re-run the script | 🔄 Manual: open new chat, re-invoke agent |
+
+**Three failure modes specific to VS Code:**
+
+1. **The Polite Stop** — The model says _"Task 3 is done! Shall I continue?"_ instead of just continuing. Mitigated by strong instructions ("Never ask — just continue") but not guaranteed.
+
+2. **Context Window Exhaustion** — After 5-15 tasks (depending on complexity), the conversation fills up. The model starts forgetting earlier tasks, hallucinating, or the session simply ends. There is **no workaround** — you must start a new chat.
+
+3. **Model Drift** — Without a hard context reset, the model accumulates stale assumptions from earlier tasks. Task 8's code may be influenced by debugging output from Task 3. CLI loops avoid this by spawning a fresh process each time.
+
+---
+
+### Our Mitigation: The Handoff Protocol
+
+Since we can't build a hard loop, we optimize for the **best realistic workflow** — a combination of self-continuation (works ~70% of the time) and easy manual recovery (for the other 30%):
+
+```mermaid
+flowchart TB
+    subgraph PLAN ["Phase 1: Plan"]
+        P1["@ralph-planner\nCreate a PRD for: [feature]"]
+        P1 --> P2["Creates PRD.md + PROGRESS.md"]
+        P2 --> P3["Outputs HANDOFF prompt\nfor @ralph-coordinator"]
+    end
+
+    subgraph LOOP ["Phase 2: Execute (self-looping)"]
+        L1["@ralph-coordinator\n(or @full-auto)"]
+        L1 --> L2[Read PROGRESS.md]
+        L2 --> L3{Not-started\ntask?}
+        L3 -->|Yes| L4[Implement + test + commit]
+        L4 --> L5[Update PROGRESS.md]
+        L5 --> L6["Print checkpoint\n✅ Task N done"]
+        L6 --> L2
+        L3 -->|All done| L7["🏁 Loop complete"]
+    end
+
+    subgraph RECOVER ["Recovery (when agent stops)"]
+        R1["Agent stops mid-loop\n(context full / polite stop)"]
+        R1 --> R2["Open new chat"]
+        R2 --> R3["Paste handoff prompt:\n@ralph-coordinator continue"]
+        R3 --> L1
+    end
+
+    P3 -.->|"copy-paste"| L1
+    L4 -.->|"context full"| R1
+
+    style PLAN fill:#2c3e50,color:#ecf0f1,stroke:#3498db
+    style LOOP fill:#2c3e50,color:#ecf0f1,stroke:#27ae60
+    style RECOVER fill:#2c3e50,color:#ecf0f1,stroke:#e74c3c
+    style P1 fill:#3498db,color:#fff
+    style L1 fill:#27ae60,color:#fff
+    style L7 fill:#27ae60,color:#fff
+    style R1 fill:#e74c3c,color:#fff
+```
+
+Every agent ends its response with a **HANDOFF block** — a ready-to-paste prompt for the next agent. This means:
+- If the agent self-continues → great, the handoff is just informational
+- If the agent stops → you copy-paste the handoff into a new chat to resume
+- If context is exhausted → new chat + paste = the loop continues from where it left off
+
+PROGRESS.md is the **single source of truth**. Any agent, in any session, reads it to know what's done and what's next.
+
+---
+
+### The Four Agents
+
+| Agent | What It Does | Self-Loops? |
+|-------|-------------|-------------|
+| **`@ralph-planner`** | Decomposes feature → `PRD.md` + `PROGRESS.md` | No — runs once, outputs handoff |
+| **`@ralph-coordinator`** | Reads PRD, implements tasks inline, tests, commits, loops | **Yes** — continues until all done |
+| **`@ralph-executor`** | Implements exactly ONE task, commits, outputs handoff | No — single task, then hands off |
+| **`@ralph-reviewer`** | Reviews changes (read-only), outputs PASS/FAIL + handoff | No — review only |
+
+---
+
+### Three Ways to Run
+
+#### Mode 1: Full Auto (maximum autonomy)
+
+Best for: well-defined features, confidence in the model.
+
+```
+@full-auto Add an Appointment entity with date, vet, pet, and notes fields.
+Include CRUD REST API, MapStruct mapper, and full test coverage.
+```
+
+The agent plans, codes, tests, reviews, commits — all inline. No user interaction needed (until context fills up).
+
+#### Mode 2: Coordinator Loop (balanced)
+
+Best for: when you already have a reviewed PRD.
+
+```
+# Step 1: Plan (review the PRD before proceeding)
+@ralph-planner Create a PRD for: [feature description]
+
+# Step 2: Review PRD.md, edit if needed, then:
+@ralph-coordinator Read PRD.md and PROGRESS.md. Start the loop.
+```
+
+#### Mode 3: Manual Chain (maximum control)
+
+Best for: complex features, learning, or when models struggle with self-continuation.
+
+```
+# 1. Plan
+@ralph-planner Create a PRD for: [feature]
+
+# 2. Execute one task at a time
+@ralph-executor Execute Task 1 from PRD.md: [description]
+
+# 3. Review
+@ralph-reviewer Review Task 1. Changed files: [list]
+
+# 4. Continue (paste the handoff prompt from the reviewer)
+@ralph-executor Execute Task 2 from PRD.md: [description]
+
+# ... repeat until done
+```
+
+---
+
+### Practical Tips
+
+| Tip | Why |
+|-----|-----|
+| **Keep tasks small** (max 2-3 files each) | Smaller tasks = less context per iteration = more tasks before context fills |
+| **Start a new chat every 5-7 tasks** | Proactive context reset — don't wait for degradation |
+| **Use `@full-auto` for simple features** | Entity + CRUD + tests is well within one session |
+| **Use `@ralph-coordinator` for complex features** | More structure, easier to resume if interrupted |
+| **Always check `PROGRESS.md` after interruption** | It's the source of truth — tells any new session exactly where to pick up |
+| **Prefer GPT-4.1 / Sonnet for the loop** | They follow "keep going" instructions more reliably than smaller models |
+
+---
+
+### Further Reading
+
+- [giocaizzi/ralph-copilot](https://github.com/giocaizzi/ralph-copilot) — Original Ralph Loop blueprint for Copilot
+- [Geoffrey Huntley's Ralph Wiggum pattern](https://ghuntley.com/ralph/) — The origin story
+- [Ralph Wiggum Cross-Platform Guide](https://ai-checker.webcoda.com.au/articles/ralph-wiggum-cross-platform-cursor-copilot-2026) — Bash scripts for multiple AI agents
+- [Chaining Copilot Custom Agents](https://www.ericksegaar.com/2025/12/15/chaining-github-copilot-custom-agents-automating-your-dev-cycle/) — Agent orchestration patterns
+- [From ReAct to Ralph Loop](https://www.alibabacloud.com/blog/from-react-to-ralph-loop-a-continuous-iteration-paradigm-for-ai-agents_602799) — Academic perspective on continuous agent iteration
 
 ## 🤖 Agents Reference
 
@@ -605,11 +637,53 @@ flowchart TB
 | **A24 Code Review** | Quality, security, best practices review | Read-only |
 | **A24 Diagrammer** | Mermaid architecture + ERD diagrams | Read/write |
 | **A24 Execution Lead** | Orchestrates full feature pipeline via sub-agents | Orchestration |
-| **A24 Full Auto** | Maximum autonomy — implements features end-to-end | Read/write |
-| **RalphPlanner** | Creates PRD with atomic tasks | Planning |
-| **RalphCoordinator** | Drives the Ralph Loop | Orchestration |
-| **RalphExecutor** | Implements one task at a time | Read/write |
-| **RalphReviewer** | Reviews changes — PASS/FAIL | Read-only |
+| **A24 Full Auto** | Plans + implements + tests + commits in one self-looping session | Self-looping |
+| **RalphPlanner** | Creates PRD with atomic tasks, outputs handoff prompt | Planning |
+| **RalphCoordinator** | Self-looping: implements all tasks inline from PRD | Self-looping |
+| **RalphExecutor** | Implements one task, commits, outputs handoff for next step | Read/write |
+| **RalphReviewer** | Reviews changes — PASS/FAIL, outputs handoff prompt | Read-only |
+
+---
+
+## 📝 Example Task: Excel Import / Export
+
+> A realistic feature spec to test the Ralph Loop with. Try: `@ralph-planner Create a PRD for the Excel Import/Export feature below`
+
+### Goal
+Add Excel export and import to the PetClinic web app so users can bulk-edit Owner records in a spreadsheet and re-import them.
+
+### Requirements
+
+- **Export**: Download all Owners as an `.xlsx` file from the web UI (one click)
+- **Import**: Upload a modified `.xlsx` file to update/create Owner records
+- **Conflict resolution UI**: If the import encounters problems, show an interactive resolution page:
+  - Invalid data → highlight the cell with a clear error message (e.g., "Telephone must be digits only")
+  - Duplicate records → show side-by-side comparison (existing vs. imported) with merge/skip/overwrite options
+  - Missing required fields → indicate which fields are missing with inline hints
+- **Auto-fix heuristics**: Before showing errors to the user, try to fix common issues automatically:
+  - Trim whitespace from all string fields
+  - Normalize phone numbers (strip dashes, spaces, parentheses)
+  - Title-case first/last names
+  - Skip completely empty rows silently
+  - If city is missing but address contains a known city name, auto-fill it
+- **Transactional**: Import either fully commits or fully rolls back — no partial state
+- **Security**: Require `OWNER_ADMIN` role for both import and export
+- **API**: REST endpoint `POST /api/owners/import` accepting `multipart/form-data` (defined in OpenAPI spec)
+- **Tests**: Unit tests for parsing/validation, MockMvc tests for the endpoint, Playwright e2e test for the full flow
+
+### How to Run This with the Ralph Loop
+
+```bash
+# Mode 1: Full Auto — one prompt, hands-free
+@full-auto Implement the Excel Import/Export feature from the README example task section.
+
+# Mode 2: Plan first, then execute
+@ralph-planner Create a PRD from the Excel Import/Export requirements in README.md
+# ... review PRD.md ...
+@ralph-coordinator Start the loop.
+```
+
+---
 
 ## 🤝 Contributing
 

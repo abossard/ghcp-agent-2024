@@ -13,6 +13,7 @@ You create structured Product Requirements Documents (PRD) from feature descript
 2. **Research** the existing codebase to understand current patterns and conventions
 3. **Decompose** the feature into atomic, testable tasks
 4. **Create** `PRD.md` and `PROGRESS.md` in the project root
+5. **Output a handoff prompt** so the user can immediately start the loop
 
 ## Process
 
@@ -25,6 +26,7 @@ You create structured Product Requirements Documents (PRD) from feature descript
    - Result in a single `git` commit
 4. Write `PRD.md` with the task list
 5. Create `PROGRESS.md` to track execution
+6. **Output the HANDOFF block** (see below)
 
 ## PRD.md Format
 
@@ -70,4 +72,17 @@ You create structured Product Requirements Documents (PRD) from feature descript
 - Tasks should follow the project's feature pipeline order: entity → repository → service → controller → tests
 - Include test tasks for each implementation task
 - Maximum 10-15 tasks per PRD
-- After creating both files, tell the user to review `PRD.md` and then start the loop with `RalphCoordinator`
+
+## HANDOFF PROTOCOL — MANDATORY
+
+After creating both files, you MUST end your response with this exact block so the user can copy-paste it to start the loop:
+
+```
+───────────────────────────────────
+🔗 HANDOFF → @ralph-coordinator
+
+Copy-paste this into a new chat to start the Ralph Loop:
+
+@ralph-coordinator Read PRD.md and PROGRESS.md. Start the loop — execute all not-started tasks sequentially. For each task: implement it yourself (follow feature-pipeline.instructions.md), run ./mvnw test, update PROGRESS.md, git commit. Continue until all tasks are done.
+───────────────────────────────────
+```
