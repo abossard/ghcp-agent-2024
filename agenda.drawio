@@ -1,0 +1,85 @@
+<mxfile host="65bd71144e">
+    <diagram id="3TIPZlo8QS0v0TuvFl7L" name="Page-1">
+        <mxGraphModel dx="251" dy="144" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="2" value="What will we today?" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+                    <mxGeometry x="440" y="90" width="180" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="3" value="JP" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" vertex="1" parent="1">
+                    <mxGeometry x="360" y="150" width="30" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="4" value="Arlind" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" vertex="1" parent="1">
+                    <mxGeometry x="500" y="150" width="30" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="5" value="Andre" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" vertex="1" parent="1">
+                    <mxGeometry x="640" y="150" width="30" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="8" style="edgeStyle=none;html=1;" edge="1" parent="1" source="6" target="7">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="6" value="What can we do with VS Code today!" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="455" y="270" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="10" style="edgeStyle=none;html=1;" edge="1" parent="1" source="7" target="9">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="7" value="Agentic Development" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="455" y="430" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="9" value="Q &amp;amp; A" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="455" y="560" width="120" height="60" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+    <diagram id="DHlEMu65K9MryWCPkjBi" name="LLM">
+        <mxGraphModel dx="711" dy="517" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="8X7vo5DCdiGq4qWrkO4X-3" style="edgeStyle=none;html=1;" edge="1" parent="1" source="8X7vo5DCdiGq4qWrkO4X-1" target="8X7vo5DCdiGq4qWrkO4X-4">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="8X7vo5DCdiGq4qWrkO4X-1" value="LLM" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="160" y="120" width="360" height="440" as="geometry"/>
+                </mxCell>
+                <mxCell id="8X7vo5DCdiGq4qWrkO4X-10" style="edgeStyle=none;html=1;" edge="1" parent="1" source="8X7vo5DCdiGq4qWrkO4X-4" target="8X7vo5DCdiGq4qWrkO4X-2">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="8X7vo5DCdiGq4qWrkO4X-4" value="CODE" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+                    <mxGeometry x="680" y="200" width="100" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="8X7vo5DCdiGq4qWrkO4X-2" value="CODE" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+                    <mxGeometry x="690" y="350" width="60" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="8X7vo5DCdiGq4qWrkO4X-5" value="Pizza Recipes" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="230" y="450" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="8X7vo5DCdiGq4qWrkO4X-7" style="edgeStyle=none;html=1;" edge="1" parent="1" source="8X7vo5DCdiGq4qWrkO4X-6" target="8X7vo5DCdiGq4qWrkO4X-1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="8X7vo5DCdiGq4qWrkO4X-6" value="Re-Insurance" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="560" y="90" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="8X7vo5DCdiGq4qWrkO4X-9" style="edgeStyle=none;html=1;" edge="1" parent="1" source="8X7vo5DCdiGq4qWrkO4X-8">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="600" y="270" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="8X7vo5DCdiGq4qWrkO4X-8" value="How would you do it?" style="shape=document;whiteSpace=wrap;html=1;boundedLbl=1;" vertex="1" parent="1">
+                    <mxGeometry x="540" y="300" width="100" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="8X7vo5DCdiGq4qWrkO4X-12" style="edgeStyle=none;html=1;" edge="1" parent="1" source="8X7vo5DCdiGq4qWrkO4X-11">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="720" y="300" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="8X7vo5DCdiGq4qWrkO4X-11" value="How would you do it?" style="shape=document;whiteSpace=wrap;html=1;boundedLbl=1;" vertex="1" parent="1">
+                    <mxGeometry x="760" y="290" width="100" height="60" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

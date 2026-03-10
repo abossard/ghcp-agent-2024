@@ -38,6 +38,13 @@ import jakarta.transaction.Transactional;
 
 import java.util.Collection;
 import java.util.List;
+import java.io.InputStream;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.http.MediaType;
+import org.springframework.samples.petclinic.service.owner.OwnerImportReport;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 
 /**
  * @author Vitaliy Fedoriv
@@ -191,5 +198,30 @@ public class OwnerRestController implements OwnersApi {
             }
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @PreAuthorize("hasRole(@roles.OWNER_ADMIN)")
+    @Override
+    public ResponseEntity<Resource> exportOwnersXlsx() {
+        byte[] data = this.clinicService.exportOwnersToXlsx();
+        ByteArrayResource resource = new ByteArrayResource(data);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
+        headers.set("Content-Disposition", "attachment; filename=owners.xlsx");
+        return new ResponseEntity<>(resource, headers, HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasRole(@roles.OWNER_ADMIN)")
+    @Override
+    public ResponseEntity<Void> importOwnersXlsx(@RequestPart("file") MultipartFile file) {
+        try (InputStream in = file.getInputStream()) {
+            OwnerImportReport report = this.clinicService.importOwnersFromXlsx(in);
+            if (report.hasErrors()) {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }

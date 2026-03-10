@@ -26,6 +26,9 @@ import org.springframework.samples.petclinic.model.PetType;
 import org.springframework.samples.petclinic.model.Specialty;
 import org.springframework.samples.petclinic.model.Vet;
 import org.springframework.samples.petclinic.model.Visit;
+import org.springframework.samples.petclinic.service.owner.OwnerImportReport;
+import java.io.InputStream;
+import java.io.IOException;
 
 /**
  * Mostly used as a facade so all controllers have a single point of entry
@@ -67,4 +70,8 @@ public interface ClinicService {
 	void deleteSpecialty(Specialty specialty) throws DataAccessException;
 
     List<Specialty> findSpecialtiesByNameIn(Set<String> names) throws DataAccessException;
+
+	byte[] exportOwnersToXlsx() throws DataAccessException;
+
+	OwnerImportReport importOwnersFromXlsx(InputStream in) throws DataAccessException;
 }

@@ -27,6 +27,12 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Supplier;
+import java.io.InputStream;
+import java.io.IOException;
+import org.springframework.samples.petclinic.service.owner.OwnerImportReport;
+import org.springframework.samples.petclinic.service.owner.OwnerImportRow;
+import org.springframework.samples.petclinic.util.OwnerExcelHelper;
+import java.util.ArrayList;
 
 /**
  * Mostly used as a facade for all Petclinic controllers
@@ -121,6 +127,17 @@ public class ClinicServiceImpl implements ClinicService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public byte[] exportOwnersToXlsx() throws DataAccessException {
+        try {
+            return OwnerExcelHelper.ownersToXlsx(findAllOwners());
+        } catch (IOException e) {
+            throw new DataAccessException("Failed to export owners to XLSX", e) {
+            };
+        }
+    }
+
+    @Override
     @Transactional
     public void deleteOwner(Owner owner) throws DataAccessException {
         ownerRepository.delete(owner);
@@ -184,6 +201,23 @@ public class ClinicServiceImpl implements ClinicService {
     @Transactional(readOnly = true)
     public Owner findOwnerById(int id) throws DataAccessException {
         return findEntityById(() -> ownerRepository.findById(id));
+    }
+
+    @Override
+    @Transactional
+    public OwnerImportReport importOwnersFromXlsx(InputStream in) throws DataAccessException {
+        try {
+            List<OwnerExcelHelper.OwnerRow> parsed = OwnerExcelHelper.parseOwnersXlsx(in);
+            OwnerImportReport report = new OwnerImportReport();
+            int srcRow = 1;
+            for (OwnerExcelHelper.OwnerRow r : parsed) {
+                report.addRow(new OwnerImportRow(r.id(), r.firstName(), r.lastName(), r.address(), r.city(), r.telephone(), srcRow++));
+            }
+            return report;
+        } catch (IOException e) {
+            throw new DataAccessException("Failed to import owners from XLSX", e) {
+            };
+        }
     }
 
     @Override

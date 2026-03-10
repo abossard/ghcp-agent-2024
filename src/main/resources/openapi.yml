@@ -454,6 +454,54 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ProblemDetail"
+
+  /owners/export:
+    get:
+      tags:
+        - owner
+      operationId: exportOwnersXlsx
+      summary: Export owners as XLSX
+      responses:
+        "200":
+          description: XLSX file
+          content:
+            application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
+              schema:
+                type: string
+                format: binary
+        "500":
+          description: Server error.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+
+  /owners/import:
+    post:
+      tags:
+        - owner
+      operationId: importOwnersXlsx
+      summary: Import owners from XLSX
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+    # PUT moved to the proper path /owners/{ownerId}/pets/{petId}
   /owners/{ownerId}/pets/{petId}/visits:
     post:
       tags:

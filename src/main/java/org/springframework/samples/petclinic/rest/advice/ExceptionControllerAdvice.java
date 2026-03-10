@@ -70,6 +70,7 @@ public class ExceptionControllerAdvice {
     @ResponseBody
     public ResponseEntity<ProblemDetail> handleGeneralException(Exception e, HttpServletRequest request) {
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+        // detailed logging omitted in production
         ProblemDetail detail = this.detailBuild(e, status, request.getRequestURL());
         return ResponseEntity.status(status).body(detail);
     }
