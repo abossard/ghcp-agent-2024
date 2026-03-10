@@ -12,5 +12,5 @@
 | 8   | Ensure import is transactional and secure | completed | — |
 | 9   | Write unit tests for parser/validation (OwnerExcelHelperTests) | completed | — |
 | 10  | Write MockMvc tests for import endpoint | completed | — |
-| 11  | Add simple UI for export/import and conflict resolution page | not-started | — |
+| 11  | Add simple UI for export/import and conflict resolution page | completed | — |
 | 12  | Add Playwright e2e test for full export-import flow | not-started | — |

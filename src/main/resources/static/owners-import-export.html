@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Owners Import / Export</title>
+  <style>
+    body{font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial;margin:32px}
+    .card{max-width:800px;border:1px solid #e5e7eb;padding:20px;border-radius:8px}
+    label{display:block;margin:12px 0 6px}
+    button{margin-right:8px}
+    #report{white-space:pre-wrap;background:#f8fafc;padding:12px;border-radius:6px;margin-top:12px}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Owners — Export / Import</h1>
+
+    <section>
+      <h2>Export</h2>
+      <p>Download current owners as an XLSX file.</p>
+      <button id="exportBtn">Export XLSX</button>
+    </section>
+
+    <hr/>
+
+    <section>
+      <h2>Import</h2>
+      <p>Upload an XLSX file to import owners. A validation report will be shown.</p>
+      <label for="fileInput">Choose XLSX file</label>
+      <input id="fileInput" type="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />
+      <div style="margin-top:12px">
+        <button id="importBtn">Upload & Validate</button>
+        <button id="importApplyBtn" disabled>Apply Import</button>
+      </div>
+
+      <div id="report" aria-live="polite"></div>
+    </section>
+
+  </div>
+
+  <script src="/static/owners-import-export.js"></script>
+</body>
+</html>
