@@ -73,5 +73,5 @@ public interface ClinicService {
 
 	byte[] exportOwnersToXlsx() throws DataAccessException;
 
-	OwnerImportReport importOwnersFromXlsx(InputStream in) throws DataAccessException;
+	OwnerImportReport importOwnersFromXlsx(InputStream in, boolean dryRun) throws DataAccessException;
 }

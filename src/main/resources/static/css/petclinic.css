@@ -171,3 +171,22 @@ textarea.form-control { resize: vertical; }
   .form-inline { flex-direction: column; align-items: stretch; }
   .table { font-size: 0.85rem; }
 }
+
+/* --- Utilities --- */
+.mb-0 { margin-bottom: 0; }
+.mt-1 { margin-top: 1rem; }
+.pre-wrap { white-space: pre-wrap; }
+.hidden { display: none; }
+.text-muted { color: #666; }
+
+/* --- Import result row highlights --- */
+.row-new { background-color: #e6f4ea; }
+.row-changed { background-color: #fff; }
+.row-unchanged { color: #888; }
+.cell-changed { background-color: #e6f4ea; font-weight: 600; }
+
+/* --- Status badges --- */
+.badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.85em; font-weight: 600; }
+.badge-new { background-color: #1e8e3e; color: #fff; }
+.badge-changed { background-color: #f9ab00; color: #333; }
+.badge-unchanged { background-color: #e0e0e0; color: #666; }

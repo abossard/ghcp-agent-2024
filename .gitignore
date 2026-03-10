@@ -58,3 +58,5 @@ secrets/
 credentials/
 
 .claude/
+*.png
+.playwright-mcp/*.log

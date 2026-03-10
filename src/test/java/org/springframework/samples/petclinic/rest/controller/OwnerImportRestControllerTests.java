@@ -26,6 +26,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
@@ -94,7 +95,7 @@ class OwnerImportRestControllerTests {
     void testImportSuccessReturnsNoContent() throws Exception {
         byte[] bytes = makeSimpleOwnersXlsx();
         OwnerImportReport report = new OwnerImportReport();
-        doReturn(report).when(clinicService).importOwnersFromXlsx(any(InputStream.class));
+        doReturn(report).when(clinicService).importOwnersFromXlsx(any(InputStream.class), anyBoolean());
 
         MockMultipartFile file = new MockMultipartFile("file", "owners.xlsx",
             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", bytes);
@@ -109,7 +110,7 @@ class OwnerImportRestControllerTests {
         byte[] bytes = makeSimpleOwnersXlsx();
         OwnerImportReport report = new OwnerImportReport();
         report.addError(new org.springframework.samples.petclinic.service.owner.OwnerFieldError(1, "firstName", "missing"));
-        doReturn(report).when(clinicService).importOwnersFromXlsx(any(InputStream.class));
+        doReturn(report).when(clinicService).importOwnersFromXlsx(any(InputStream.class), anyBoolean());
 
         MockMultipartFile file = new MockMultipartFile("file", "owners.xlsx",
             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", bytes);
@@ -122,7 +123,7 @@ class OwnerImportRestControllerTests {
     @WithMockUser(roles = "OWNER_ADMIN")
     void testImportInternalServerErrorOnException() throws Exception {
         byte[] bytes = makeSimpleOwnersXlsx();
-        doThrow(new RuntimeException("boom")).when(clinicService).importOwnersFromXlsx(any(InputStream.class));
+        doThrow(new RuntimeException("boom")).when(clinicService).importOwnersFromXlsx(any(InputStream.class), anyBoolean());
 
         MockMultipartFile file = new MockMultipartFile("file", "owners.xlsx",
             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", bytes);

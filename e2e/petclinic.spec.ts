@@ -13,8 +13,9 @@ test.describe('PetClinic Web UI - Home', () => {
 
   test('Navigation links are present @screenshot', async ({ page }) => {
     await page.goto('/');
-    await expect(page.locator('.nav-links a')).toHaveCount(5);
+    await expect(page.locator('.nav-links a')).toHaveCount(6);
     await expect(page.locator('.nav-links')).toContainText('Find Owners');
+    await expect(page.locator('.nav-links')).toContainText('Import / Export');
     await expect(page.locator('.nav-links')).toContainText('Veterinarians');
     await page.screenshot({ path: 'e2e/screenshots/navigation.png', fullPage: true });
   });

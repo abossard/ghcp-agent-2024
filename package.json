@@ -25,6 +25,7 @@
     "playwright:report": "npx --yes playwright show-report"
   },
   "devDependencies": {
-    "@playwright/test": "^1.51.0"
+    "@playwright/test": "^1.51.0",
+    "@types/node": "^25.4.0"
   }
 }

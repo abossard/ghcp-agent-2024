@@ -29,6 +29,7 @@ import java.util.Set;
 import java.util.function.Supplier;
 import java.io.InputStream;
 import java.io.IOException;
+import org.springframework.samples.petclinic.service.owner.OwnerDuplicate;
 import org.springframework.samples.petclinic.service.owner.OwnerImportReport;
 import org.springframework.samples.petclinic.service.owner.OwnerImportRow;
 import org.springframework.samples.petclinic.util.OwnerExcelHelper;
@@ -205,19 +206,85 @@ public class ClinicServiceImpl implements ClinicService {
 
     @Override
     @Transactional
-    public OwnerImportReport importOwnersFromXlsx(InputStream in) throws DataAccessException {
+    public OwnerImportReport importOwnersFromXlsx(InputStream in, boolean dryRun) throws DataAccessException {
         try {
             List<OwnerExcelHelper.OwnerRow> parsed = OwnerExcelHelper.parseOwnersXlsx(in);
+            Collection<Owner> existingOwners = ownerRepository.findAll();
             OwnerImportReport report = new OwnerImportReport();
+            int created = 0;
+            int updated = 0;
+            int skipped = 0;
             int srcRow = 1;
             for (OwnerExcelHelper.OwnerRow r : parsed) {
-                report.addRow(new OwnerImportRow(r.id(), r.firstName(), r.lastName(), r.address(), r.city(), r.telephone(), srcRow++));
+                OwnerImportRow importRow = new OwnerImportRow(r.id(), r.firstName(), r.lastName(), r.address(), r.city(), r.telephone(), srcRow);
+                report.addRow(importRow);
+
+                // Duplicate detection: match by ID or by (firstName + lastName + telephone)
+                Owner matchedOwner = null;
+                for (Owner existing : existingOwners) {
+                    boolean idMatch = r.id() != null && existing.getId() != null && r.id().equals(existing.getId());
+                    boolean namePhoneMatch = r.firstName() != null && r.lastName() != null && r.telephone() != null
+                        && r.firstName().equalsIgnoreCase(existing.getFirstName())
+                        && r.lastName().equalsIgnoreCase(existing.getLastName())
+                        && r.telephone().equals(existing.getTelephone());
+                    if (idMatch || namePhoneMatch) {
+                        matchedOwner = existing;
+                        OwnerImportRow existingRow = new OwnerImportRow(
+                            existing.getId(), existing.getFirstName(), existing.getLastName(),
+                            existing.getAddress(), existing.getCity(), existing.getTelephone(), 0);
+                        report.addDuplicate(new OwnerDuplicate(srcRow, importRow, existingRow));
+                        break;
+                    }
+                }
+
+                if (!dryRun && !report.hasErrors()) {
+                    if (matchedOwner == null) {
+                        // New owner
+                        Owner owner = new Owner();
+                        owner.setFirstName(r.firstName());
+                        owner.setLastName(r.lastName());
+                        owner.setAddress(r.address());
+                        owner.setCity(r.city());
+                        owner.setTelephone(r.telephone());
+                        ownerRepository.save(owner);
+                        created++;
+                    } else if (hasChanges(r, matchedOwner)) {
+                        // Update existing owner with changed fields
+                        matchedOwner.setFirstName(r.firstName());
+                        matchedOwner.setLastName(r.lastName());
+                        matchedOwner.setAddress(r.address());
+                        matchedOwner.setCity(r.city());
+                        matchedOwner.setTelephone(r.telephone());
+                        ownerRepository.save(matchedOwner);
+                        updated++;
+                    } else {
+                        skipped++;
+                    }
+                }
+                srcRow++;
             }
+            report.setCreated(created);
+            report.setUpdated(updated);
+            report.setSkipped(skipped);
             return report;
         } catch (IOException e) {
             throw new DataAccessException("Failed to import owners from XLSX", e) {
             };
         }
+    }
+
+    private boolean hasChanges(OwnerExcelHelper.OwnerRow imported, Owner existing) {
+        return !nullSafeEquals(imported.firstName(), existing.getFirstName())
+            || !nullSafeEquals(imported.lastName(), existing.getLastName())
+            || !nullSafeEquals(imported.address(), existing.getAddress())
+            || !nullSafeEquals(imported.city(), existing.getCity())
+            || !nullSafeEquals(imported.telephone(), existing.getTelephone());
+    }
+
+    private boolean nullSafeEquals(String a, String b) {
+        if (a == null && b == null) return true;
+        if (a == null || b == null) return false;
+        return a.equals(b);
     }
 
     @Override

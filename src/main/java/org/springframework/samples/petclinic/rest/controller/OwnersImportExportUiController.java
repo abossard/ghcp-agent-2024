@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/owners")
 public class OwnersImportExportUiController {
 
-    @GetMapping("/ui")
-    public String ui() {
-        return "redirect:/owners-import-export.html";
+    @GetMapping("/import-export")
+    public String importExport() {
+        return "owners/importExport";
     }
 }

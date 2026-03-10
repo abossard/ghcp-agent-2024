@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head('Import / Export')}"><title>Import / Export</title></head>
+<body>
+  <nav th:replace="~{layout :: nav}"></nav>
+
+  <main class="container">
+    <h2>Owners &mdash; Import / Export</h2>
+
+    <!-- Export section -->
+    <div class="card">
+      <div class="card-header">
+        <h3 class="mb-0">Export</h3>
+      </div>
+      <div class="card-body">
+        <p>Download all current owners as an Excel (.xlsx) file.</p>
+        <button id="exportBtn" class="btn btn-primary">Export XLSX</button>
+      </div>
+    </div>
+
+    <!-- Import section -->
+    <div class="card">
+      <div class="card-header">
+        <h3 class="mb-0">Import</h3>
+      </div>
+      <div class="card-body">
+        <p>Upload a modified Excel file to validate and import owner records.</p>
+
+        <div class="form-group">
+          <label for="fileInput">Choose XLSX file</label>
+          <input id="fileInput" type="file" class="form-control"
+                 accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />
+        </div>
+
+        <div class="actions mt-1">
+          <button id="importBtn" class="btn btn-success">Upload &amp; Validate</button>
+          <button id="importApplyBtn" class="btn btn-primary" disabled>Apply Import</button>
+        </div>
+
+        <div id="report" class="alert hidden pre-wrap mt-1" aria-live="polite"></div>
+
+        <!-- Import Results -->
+        <div id="resultsSection" class="hidden mt-1">
+          <h4>Import Preview</h4>
+          <table class="table" id="resultsTable">
+            <thead>
+              <tr>
+                <th>Row</th>
+                <th>Status</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Address</th>
+                <th>City</th>
+                <th>Telephone</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+
+        <!-- Errors -->
+        <div id="errorSection" class="hidden mt-1">
+          <h4>Validation Errors</h4>
+          <table class="table" id="errorTable">
+            <thead>
+              <tr>
+                <th>Row</th>
+                <th>Field</th>
+                <th>Error</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+
+        <!-- Summary -->
+        <div id="summary" class="hidden mt-1">
+          <h4>Import Summary</h4>
+          <p id="summaryText"></p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer th:replace="~{layout :: footer}"></footer>
+
+  <script th:src="@{/owners-import-export.js}"></script>
+</body>
+</html>

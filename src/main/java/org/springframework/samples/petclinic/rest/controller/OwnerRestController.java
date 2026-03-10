@@ -215,11 +215,32 @@ public class OwnerRestController implements OwnersApi {
     @Override
     public ResponseEntity<Void> importOwnersXlsx(@RequestPart("file") MultipartFile file) {
         try (InputStream in = file.getInputStream()) {
-            OwnerImportReport report = this.clinicService.importOwnersFromXlsx(in);
+            OwnerImportReport report = this.clinicService.importOwnersFromXlsx(in, false);
             if (report.hasErrors()) {
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+                return ResponseEntity.badRequest().build();
             }
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * Validate-only import endpoint — returns the full report as JSON
+     * so the UI can display errors, duplicates, and conflict resolution options.
+     */
+    @PreAuthorize("hasRole(@roles.OWNER_ADMIN)")
+    @org.springframework.web.bind.annotation.PostMapping(
+        value = "/owners/import/validate",
+        consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<OwnerImportReport> validateImport(@RequestPart("file") MultipartFile file) {
+        try (InputStream in = file.getInputStream()) {
+            OwnerImportReport report = this.clinicService.importOwnersFromXlsx(in, true);
+            if (report.hasErrors()) {
+                return ResponseEntity.badRequest().body(report);
+            }
+            return ResponseEntity.ok(report);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
