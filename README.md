@@ -4,7 +4,7 @@
 
 This starter project demonstrates how to prepare a Spring Boot application — built around the classic **PetClinic** domain (Owners, Pets, Vets, Visits) — for maximum productivity with GitHub Copilot's Agent Mode, even when MCP (Model Context Protocol) is blocked by organizational policy.
 
-## 🎯 What This Project Solves
+## 🎯 What This Project tries to address
 
 In many FSI environments, developers face significant restrictions:
 
@@ -25,31 +25,66 @@ In many FSI environments, developers face significant restrictions:
 AI coding tools have evolved through three distinct generations. Understanding where you are on this spectrum determines what's possible — and what isn't.
 
 ```mermaid
+%%{init: {'flowchart': {'htmlLabels': true}} }%%
 graph LR
-    subgraph GEN1 ["Generation 1\n<b>Code Completion</b>"]
-        G1["Tab to accept\nLine-by-line suggestions\nNo context beyond current file"]
+    subgraph GEN1 ["Generation 1<br><b>Code Completion</b>"]
+        G1["Tab to accept<br/>Line-by-line suggestions<br/>No context beyond current file"]
     end
 
-    subgraph GEN2 ["Generation 2\n<b>Planning & Coding Assistance</b>"]
-        G2["Multi-file edits\nChat + agent mode\nReads codebase, runs commands\nFollows instructions & conventions"]
+    subgraph GEN2 ["Generation 2<br><b>Planning & Coding Assistance</b>"]
+        G2["Multi-file edits<br/>Chat + agent mode<br/>Reads codebase, runs commands<br/>Follows instructions & conventions"]
     end
 
-    subgraph GEN3 ["Generation 3\n<b>Autonomous Agents</b>"]
-        G3["Goal-oriented loops\nPlans → builds → tests → fixes\nSelf-correcting until done\nFilesystem as memory"]
+    subgraph GEN3 ["Generation 3<br><b>Autonomous Agents</b>"]
+        G3["Goal-oriented loops<br/>Plans → builds → tests → fixes<br/>Self-correcting until done<br/>Filesystem as memory"]
     end
 
-    GEN1 -->|"+ context\n+ tools"| GEN2
-    GEN2 -->|"+ control loop\n+ persistence"| GEN3
-
-    style GEN1 fill:#95a5a6,color:#fff,stroke:#7f8c8d
-    style GEN2 fill:#3498db,color:#fff,stroke:#2980b9
-    style GEN3 fill:#27ae60,color:#fff,stroke:#1e8449
+    GEN1 -->|"+ context<br/>+ tools"| GEN2
+    GEN2 -->|"+ control loop<br/>+ persistence"| GEN3
 ```
 
-| | Gen 1: Completion | Gen 2: Assistance | Gen 3: Autonomy |
-|--|---|---|---|
-| **Interaction** | Tab to accept | Chat / agent mode | Goal in, code out |
-| **Scope** | Current line/block | Multi-file, cross-project | Entire feature end-to-end |
+## Almost agentic coding in VS Code
+
+```mermaid
+%%{init: {'flowchart': {'htmlLabels': true}} }%%
+flowchart TB
+        A[Developer] --> B{Choose Mode}
+        B -->|Dev| D[Spring Dev]
+        B -->|Test| E[Test Mode]
+        B -->|Review| F[Review Mode]
+
+        D & E & F --> G[AGENTS.md → Instructions → Skills]
+        G --> H[CLI: mvnw test · compile · git diff]
+        H --> I[✅ Tests Pass · Build OK · Changes Reviewed]
+```
+
+```mermaid
+%%{init: {'flowchart': {'htmlLabels': true}} }%%
+flowchart TB
+    subgraph AGENTS["High-level Custom Agents (.github/agents)"]
+        planner["RalphPlanner"]
+        coordinator["RalphCoordinator"]
+        executor["RalphExecutor"]
+        reviewer["RalphReviewer"]
+        fullauto["A24 Full Auto"]
+        execlead["A24 Execution Lead"]
+        dev["A24 Spring Boot Developer"]
+        tester["A24 Test Engineer"]
+        api["A24 API Designer"]
+        diagrammer["A24 Diagrammer"]
+        security["A24 Security Reviewer"]
+    end
+
+    planner --> coordinator
+    coordinator --> executor
+    coordinator --> reviewer
+    execlead --> dev
+    execlead --> tester
+    execlead --> api
+    execlead --> diagrammer
+    execlead --> security
+
+```
 | **Context** | Current file | Codebase + instructions | PRD + progress files + git |
 | **Control** | Human drives everything | Human guides, AI executes | AI loops until done |
 | **Example** | Copilot completions | Copilot Agent Mode | CLI Ralph Loop (bash + AI) |
@@ -78,10 +113,10 @@ graph TB
     Config --> APP
     Modes --> APP
 
-    style BLOCK fill:#ff6b6b,stroke:#c0392b,color:#fff
-    style AVAIL fill:#27ae60,stroke:#1e8449,color:#fff
-    style AGENTS fill:#3498db,stroke:#2980b9,color:#fff
-    style APP fill:#2c3e50,stroke:#1a252f,color:#fff
+    style BLOCK stroke:#c0392b,color:#fff
+    style AVAIL stroke:#1e8449,color:#fff
+    style AGENTS stroke:#2980b9,color:#fff
+    style APP stroke:#1a252f,color:#fff
 ```
 
 ## 🔧 How Agentic Development Works (Without MCP)
@@ -97,9 +132,9 @@ flowchart TB
     G --> H[CLI: mvnw test · compile · git diff]
     H --> I[✅ Tests Pass · Build OK · Changes Reviewed]
 
-    style D fill:#27ae60,color:#fff
-    style E fill:#3498db,color:#fff
-    style F fill:#e74c3c,color:#fff
+    style D color:#fff
+    style E color:#fff
+    style F color:#fff
 ```
 
 ## 📁 Project Structure
@@ -297,9 +332,9 @@ graph TB
     J -->|"✅ Pass"| K["Done"]
     J -->|"❌ Fail"| L["Auto-fix & Retry"] --> J
 
-    style E fill:#27ae60,color:#fff
-    style K fill:#27ae60,color:#fff
-    style L fill:#e67e22,color:#fff
+    style E color:#fff
+    style K color:#fff
+    style L color:#fff
 ```
 
 The `implement-feature` prompt + `feature-pipeline` instruction teach the agent to follow an OpenAPI-first pipeline. The agent learns by reading your existing code patterns (e.g., `Owner` for complex entities, `PetType` for simple ones).
@@ -348,10 +383,10 @@ graph TB
     DEV --> TEST["Tester"] --> SEC["Reviewer"]
     SEC --> DIAG["📊 Diagrammer"]
 
-    style EL fill:#3498db,color:#fff
-    style DIAG fill:#27ae60,color:#fff
-    style RF fill:#f39c12,color:#fff
-    style QG fill:#e74c3c,color:#fff
+    style EL color:#fff
+    style DIAG color:#fff
+    style RF color:#fff
+    style QG color:#fff
 ```
 
 </details>
@@ -413,10 +448,10 @@ flowchart LR
         C -->|No| D[🏁 Done]
     end
 
-    style BASH fill:#1a1a2e,color:#e0e0e0,stroke:#00d4ff
-    style S fill:#3498db,color:#fff
-    style D fill:#27ae60,color:#fff
-    style I fill:#f39c12,color:#fff
+    style BASH color:#e0e0e0,stroke:#00d4ff
+    style S color:#fff
+    style D color:#fff
+    style I color:#fff
 ```
 
 The bash script is the **control plane** — it can't be distracted, forget, or lose context. It mechanically reads a file, invokes an agent, checks results, and loops. The AI is just a tool called inside the loop.
@@ -444,11 +479,11 @@ flowchart TB
         X --> N["👤 New chat\n@ralph-coordinator continue"]
     end
 
-    style VSCODE fill:#1a1a2e,color:#e0e0e0,stroke:#ff6b6b
-    style A fill:#f39c12,color:#fff
-    style A5 fill:#e74c3c,color:#fff
-    style W fill:#95a5a6,color:#fff
-    style X fill:#7f8c8d,color:#fff
+    style VSCODE color:#e0e0e0,stroke:#ff6b6b
+    style A color:#fff
+    style A5 color:#fff
+    style W color:#fff
+    style X color:#fff
 ```
 
 > **Key insight**: The AI is both the control plane _and_ the worker. There's nothing external forcing it to continue. It may stop, get confused, or run out of context — and there's no mechanism to restart it automatically.
@@ -470,11 +505,11 @@ flowchart LR
         AI2["AI Agent\n(is the loop itself)"] -->|"tries to\ncontinue"| AI2
     end
 
-    style CLI fill:#d4edda,color:#000,stroke:#27ae60
-    style IDE fill:#fff3cd,color:#000,stroke:#f39c12
-    style B fill:#27ae60,color:#fff
-    style AI1 fill:#3498db,color:#fff
-    style AI2 fill:#f39c12,color:#fff
+    style CLI color:#000,stroke:#27ae60
+    style IDE color:#000,stroke:#f39c12
+    style B color:#fff
+    style AI1 color:#fff
+    style AI2 color:#fff
 ```
 
 | Property | CLI Ralph Loop | VS Code Ralph Loop |
@@ -529,13 +564,13 @@ flowchart TB
     P3 -.->|"copy-paste"| L1
     L4 -.->|"context full"| R1
 
-    style PLAN fill:#2c3e50,color:#ecf0f1,stroke:#3498db
-    style LOOP fill:#2c3e50,color:#ecf0f1,stroke:#27ae60
-    style RECOVER fill:#2c3e50,color:#ecf0f1,stroke:#e74c3c
-    style P1 fill:#3498db,color:#fff
-    style L1 fill:#27ae60,color:#fff
-    style L7 fill:#27ae60,color:#fff
-    style R1 fill:#e74c3c,color:#fff
+    style PLAN color:#ecf0f1,stroke:#3498db
+    style LOOP color:#ecf0f1,stroke:#27ae60
+    style RECOVER color:#ecf0f1,stroke:#e74c3c
+    style P1 color:#fff
+    style L1 color:#fff
+    style L7 color:#fff
+    style R1 color:#fff
 ```
 
 Every agent ends its response with a **HANDOFF block** — a ready-to-paste prompt for the next agent. This means:
