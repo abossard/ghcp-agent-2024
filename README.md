@@ -433,12 +433,13 @@ The Ralph Loop is an autonomous coding pattern (inspired by [giocaizzi/ralph-cop
 In a CLI-based Ralph Loop (e.g., bash + Claude Code), a **hard outer loop** guarantees continuation:
 
 ```mermaid
+%%{init: {'flowchart': {'htmlLabels': true}} }%%
 flowchart LR
     subgraph BASH ["🖥️ Bash Script (HARD LOOP)"]
         direction TB
         S[Start] --> R[Read PROGRESS.md]
-        R --> C{Not-started\ntask?}
-        C -->|Yes| I["Invoke AI agent\n(fresh context)"]
+        R --> C{"Not-started<br/>task?"}
+        C -->|Yes| I["Invoke AI agent<br/>(fresh context)"]
         I --> T[Run tests]
         T --> P{Pass?}
         P -->|Yes| G[git commit]
@@ -463,20 +464,21 @@ The bash script is the **control plane** — it can't be distracted, forget, or 
 In VS Code with Copilot agent mode, **there is no outer bash loop**. The AI itself _is_ the loop. This is a fundamentally different architecture:
 
 ```mermaid
+%%{init: {'flowchart': {'htmlLabels': true}} }%%
 flowchart TB
     subgraph VSCODE ["🆚 VS Code — Agent Mode"]
         direction TB
-        U["👤 User types prompt"] --> A["🤖 AI Agent\n(is both the loop AND the worker)"]
+        U["👤 User types prompt"] --> A["🤖 AI Agent<br/>(is both the loop AND the worker)"]
         A --> A1[Read PROGRESS.md]
         A1 --> A2[Implement task]
         A2 --> A3[Run tests]
         A3 --> A4[Commit]
-        A4 --> A5{{"Should I\ncontinue?\n(AI decides)"}}
-        A5 -->|"✅ Keeps going\n(ideal)"| A1
-        A5 -->|"⚠️ Stops to ask\n(common)"| W["👤 User must\nre-prompt"]
-        A5 -->|"💀 Context full\n(inevitable)"| X["Session dies\n→ start new chat"]
+        A4 --> A5{{"Should I<br/>continue?<br/>(AI decides)"}}
+        A5 -->|"✅ Keeps going<br/>(ideal)"| A1
+        A5 -->|"⚠️ Stops to ask<br/>(common)"| W["👤 User must<br/>re-prompt"]
+        A5 -->|"💀 Context full<br/>(inevitable)"| X["Session dies<br/>→ start new chat"]
         W --> A
-        X --> N["👤 New chat\n@ralph-coordinator continue"]
+        X --> N["👤 New chat<br/>@ralph-coordinator continue"]
     end
 
     style VSCODE color:#e0e0e0,stroke:#ff6b6b
@@ -495,14 +497,15 @@ flowchart TB
 The fundamental problem is **who controls the loop**:
 
 ```mermaid
+%%{init: {'flowchart': {'htmlLabels': true}} }%%
 flowchart LR
     subgraph CLI ["✅ CLI Ralph Loop"]
-        B["Bash\n(deterministic)"] -->|"calls"| AI1["AI Agent\n(stateless tool)"]
+        B["Bash<br/>(deterministic)"] -->|"calls"| AI1["AI Agent<br/>(stateless tool)"]
         AI1 -->|"returns"| B
     end
 
     subgraph IDE ["⚠️ VS Code Ralph Loop"]
-        AI2["AI Agent\n(is the loop itself)"] -->|"tries to\ncontinue"| AI2
+        AI2["AI Agent<br/>(is the loop itself)"] -->|"tries to<br/>continue"| AI2
     end
 
     style CLI color:#000,stroke:#27ae60
@@ -536,28 +539,29 @@ flowchart LR
 Since we can't build a hard loop, we optimize for the **best realistic workflow** — a combination of self-continuation (works ~70% of the time) and easy manual recovery (for the other 30%):
 
 ```mermaid
+%%{init: {'flowchart': {'htmlLabels': true}} }%%
 flowchart TB
     subgraph PLAN ["Phase 1: Plan"]
-        P1["@ralph-planner\nCreate a PRD for: [feature]"]
+        P1["@ralph-planner<br/>Create a PRD for: [feature]"]
         P1 --> P2["Creates PRD.md + PROGRESS.md"]
-        P2 --> P3["Outputs HANDOFF prompt\nfor @ralph-coordinator"]
+        P2 --> P3["Outputs HANDOFF prompt<br/>for @ralph-coordinator"]
     end
 
     subgraph LOOP ["Phase 2: Execute (self-looping)"]
-        L1["@ralph-coordinator\n(or @full-auto)"]
+        L1["@ralph-coordinator<br/>(or @full-auto)"]
         L1 --> L2[Read PROGRESS.md]
-        L2 --> L3{Not-started\ntask?}
+        L2 --> L3{"Not-started<br/>task?"}
         L3 -->|Yes| L4[Implement + test + commit]
         L4 --> L5[Update PROGRESS.md]
-        L5 --> L6["Print checkpoint\n✅ Task N done"]
+        L5 --> L6["Print checkpoint<br/>✅ Task N done"]
         L6 --> L2
         L3 -->|All done| L7["🏁 Loop complete"]
     end
 
     subgraph RECOVER ["Recovery (when agent stops)"]
-        R1["Agent stops mid-loop\n(context full / polite stop)"]
+        R1["Agent stops mid-loop<br/>(context full / polite stop)"]
         R1 --> R2["Open new chat"]
-        R2 --> R3["Paste handoff prompt:\n@ralph-coordinator continue"]
+        R2 --> R3["Paste handoff prompt:<br/>@ralph-coordinator continue"]
         R3 --> L1
     end
 
